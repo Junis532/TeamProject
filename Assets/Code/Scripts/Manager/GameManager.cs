@@ -38,7 +38,10 @@ public class GameManager : MonoSingleton<GameManager> // 싱글톤 사용
         base.Awake(); // MonoSingleton의 Awake 호출
 
         // 플레이어 초기화
-        playerStatsRuntime = new PlayerStatsRuntime(playerStats);   // 스탯 값 복제
+        if (playerStatsRuntime != null)
+        {
+            playerStatsRuntime = new PlayerStatsRuntime(playerStats);   // 스탯 값 복제
+        }
     }
 }
 
