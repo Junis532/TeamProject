@@ -20,6 +20,7 @@ public class GrapplingHook : MonoBehaviour
     bool hasPlayedAttachSound = false;
     bool isPlayedDraftSound = false;
     bool hasPlayedShootSound = false;
+    bool hasAppliedHookForce = false;
 
     // 슬로우 효과 변수
     public float slowFactor;    // 슬로우 비율
@@ -68,7 +69,7 @@ public class GrapplingHook : MonoBehaviour
             hasPlayedAttachSound = true;
         }
 
-        if (Mouse.current.leftButton.wasPressedThisFrame && !isHookActive && !isAttach && !isEnemyAttach)
+            if (Mouse.current.leftButton.wasPressedThisFrame && !isHookActive && !isAttach && !isEnemyAttach)
         {
             GameManager.Instance.cameraShake.ShakeForSeconds(0.1f); // 카메라 흔들기
             GameManager.Instance.audioManager.HookShootSound(0.7f); // 갈고리 발사 효과음
@@ -121,6 +122,23 @@ public class GrapplingHook : MonoBehaviour
                 hasShakedOnAttach = true;
             }
 
+            //if (!hasAppliedHookForce)
+            //{
+            //    Vector2 dir = hook.position - transform.position;
+            //    float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+
+            //    if (angle < 90)
+            //    {
+            //        rb.AddForce(Vector2.right * 3f);
+            //    }
+            //    else if (angle > 90)
+            //    {
+            //        rb.AddForce(Vector2.left * 3f);
+            //    }
+
+            //    hasAppliedHookForce = true;
+            //}
+
             // 마우스를 뗐을 때만 해제
             if (Mouse.current.leftButton.wasReleasedThisFrame)
             {
@@ -129,6 +147,7 @@ public class GrapplingHook : MonoBehaviour
                 isLineMax = false;
                 hasShakedOnAttach = false;
                 hasPlayedAttachSound = false;
+                hasAppliedHookForce = true;
 
                 hook.GetComponent<Hooking>().joint2D.enabled = false;
                 hook.gameObject.SetActive(false);
@@ -139,7 +158,7 @@ public class GrapplingHook : MonoBehaviour
                 slowCoroutine = StartCoroutine(SlowRoutine());
             }
 
-            // 우클릭 줄 당기기 로직은 그대로 OK
+            // 우클릭 줄 당기기
             if (Mouse.current.rightButton.isPressed)
             {
                 if (hookJoint != null && hookJoint.enabled)
