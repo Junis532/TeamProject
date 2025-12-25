@@ -49,10 +49,17 @@ public class PlayerController : MonoBehaviour, IDamageable
             sprite.flipX = true;
     }
 
-
-    void OnJump()
+	private void Update()
 	{
-		// 그래플링 사용 중 점프 중일 때
+		// 플레이어가 그래플링 훅 사용 중일 때
+		if (grappling.isAttach)
+			isGrounded = false;		// 바닥에 있지 X
+	}
+
+
+	void OnJump()
+	{
+		// 그래플링 사용 중 점프 시
 		if (grappling.isAttach) return;
 
 		// 플레이어가 바닥이 아닐 경우
@@ -69,18 +76,19 @@ public class PlayerController : MonoBehaviour, IDamageable
 		// 바닥 체크
 		foreach (var contact in collision.contacts)
 		{
-			if (contact.normal.y > 0.5f &&
+			if (contact.normal.y > 0.7f &&
 				contact.point.y < transform.position.y)
 			{
 				isGrounded = true;
+				rigid.linearVelocity = new Vector2(0f, rigid.linearVelocityY);
 				break;
 			}
 		}
 
-		if (isGrounded && rigid.linearVelocityY < 0f)
-		{
-			rigid.linearVelocity = new Vector2(rigid.linearVelocity.x, 0f);
-		}
+		//if (isGrounded && rigid.linearVelocityY < 0f)
+		//{
+		//	rigid.linearVelocity = new Vector2(rigid.linearVelocity.x, 0f);
+		//}
 
 	}
 
