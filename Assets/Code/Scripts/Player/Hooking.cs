@@ -28,15 +28,22 @@ public class Hooking : MonoBehaviour
             float dist = Vector2.Distance(grappling.transform.position, transform.position);
             joint2D.distance = dist;
 
-            if (GameManager.Instance.playerController.isGrounded == true)
+            if (GameManager.Instance.playerController.isGrounded == true) // ∂•ø° ¥Íæ“¿ª ∂ß ¡Ÿ¿Ã±‚
             {
                 joint2D.distance -= joint2D.distance * 0.2f;
             }
 
-            if (joint2D.distance <= minDistanceLimit)
+            if (joint2D.distance >= 9)
+            {
+                joint2D.distance = 7;
+            }
+
+            if (joint2D.distance <= minDistanceLimit) // ¬™¿ª ∂ß ¥√∏Æ±‚
             {
                 joint2D.distance = minClampDistance;
             }
+
+            grappling.ApplyHookImpulse(transform.position); // »˚ ¡÷±‚
 
             grappling.isAttach = true;
             grappling.isHookActive = false;
