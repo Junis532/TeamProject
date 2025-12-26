@@ -1173,6 +1173,8 @@ GameObject:
   - component: {fileID: 156809794}
   - component: {fileID: 156809795}
   - component: {fileID: 156809797}
+  - component: {fileID: 156809799}
+  - component: {fileID: 156809798}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -1445,6 +1447,38 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CursorPathMarking
   mainCam: {fileID: 519420031}
   visualizerLine: {fileID: 1965681169}
+--- !u!114 &156809798
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 156809785}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11ed0b504517e004eb8510cda5abb9b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SwingBoostController
+  boostMultiplier: 1.5
+  boostDuration: 0.5
+--- !u!114 &156809799
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 156809785}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 999c92b5ce3397b499191207a11e1ed1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SwingGaugeController
+  swingGauge: {fileID: 260283592}
+  hook: {fileID: 1914685234}
+  maxTurns: 3
+  decreaseSpeed: 200
+  increaseMultiplier: 1
+  turnMinDelta: 0.3
 --- !u!1 &180838152
 GameObject:
   m_ObjectHideFlags: 0
