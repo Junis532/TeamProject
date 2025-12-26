@@ -39,13 +39,17 @@ public class GrapplingHook : MonoBehaviour
     private bool isStopped = false;
 
 	PlayerController player;    // 플레이어
+
+    public SwingBoostController swingBoostController;
+
     ColorAdjustments colorAdjustments;
     private void Awake()
 	{
 		rb = GetComponent<Rigidbody2D>();
 		sprite = GetComponent<SpriteRenderer>();
 		player = GetComponent<PlayerController>();
-	}
+        swingBoostController = GetComponent<SwingBoostController>();
+    }
 
 	void Start()
     {
@@ -172,6 +176,11 @@ public class GrapplingHook : MonoBehaviour
                     StopCoroutine(slowCoroutine);
 
                 slowCoroutine = StartCoroutine(SlowRoutine());
+
+                if (swingBoostController != null)
+                {
+                    swingBoostController.Boost();
+                }
             }
 
             // 우클릭 줄 당기기
