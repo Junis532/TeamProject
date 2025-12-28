@@ -89,7 +89,7 @@ public class GrapplingHook : MonoBehaviour
 			hasPlayedAttachSound = true;
 		}
 
-		if (Mouse.current.leftButton.wasPressedThisFrame && !isHookActive && !isAttach && !isEnemyAttach)
+		if (Mouse.current.leftButton.wasPressedThisFrame && !isHookActive && !isAttach)
 		{
 			GameManager.Instance.cameraShake.ShakeForSeconds(0.1f); // 카메라 흔들기
 			GameManager.Instance.audioManager.HookShootSound(0.7f); // 갈고리 발사 효과음
@@ -103,7 +103,7 @@ public class GrapplingHook : MonoBehaviour
 		}
 
 		// 훅이 발사된 상태이고, 아직 최대 사거리에 도달하지 않았을 때
-		if (isHookActive && !isLineMax && !isAttach && !isEnemyAttach)
+		if (isHookActive && !isLineMax && !isAttach)
 		{
 			// 마우스 방향으로 훅을 전진시킴
 			hook.Translate(mousedir.normalized * Time.deltaTime * GameManager.Instance.playerStatsRuntime.hookSpeed);
@@ -117,7 +117,7 @@ public class GrapplingHook : MonoBehaviour
 		}
 
 		// 훅이 최대 사거리에 도달한 이후
-		else if (isHookActive && isLineMax && !isAttach && !isEnemyAttach)
+		else if (isHookActive && isLineMax && !isAttach)
 		{
 			// 훅을 플레이어 위치로 부드럽게 되돌림
 			hook.position = Vector2.MoveTowards(hook.position, transform.position, Time.deltaTime * GameManager.Instance.playerStatsRuntime.hookSpeed);
@@ -134,7 +134,7 @@ public class GrapplingHook : MonoBehaviour
 			}
 		}
 
-		else if (isAttach)
+		if (isAttach)
 		{
 			if (!hasShakedOnAttach)
 			{
@@ -205,9 +205,10 @@ public class GrapplingHook : MonoBehaviour
 			}
 		}
 
-		else if (isEnemyAttach) // 적 끌고오기
+		// 적 던지기
+		if (isEnemyAttach)
 		{
-			if (Mouse.current.leftButton.wasPressedThisFrame && enemies.Count > 0)
+			if (Mouse.current.rightButton.wasPressedThisFrame && enemies.Count > 0)
 			{
 				Vector2 mouseWorld = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
 
@@ -220,7 +221,7 @@ public class GrapplingHook : MonoBehaviour
 
 	void LateUpdate()
 	{
-		if (!isEnemyAttach) return;
+		//if (!isEnemyAttach) return;
 
 		SpriteRenderer playerSprite = GetComponent<SpriteRenderer>();
 		for (int i = 0; i < enemies.Count; i++)
@@ -267,15 +268,16 @@ public class GrapplingHook : MonoBehaviour
 		enemy.localPosition = offset;
 
 		// 훅 & 줄 숨기기
-		hook.gameObject.SetActive(false);
-		line.enabled = false;
+		//hook.gameObject.SetActive(false);
+		//line.enabled = false;
 
 		isEnemyAttach = true;
 		isAttach = false;
-		isHookActive = false;
+		//isHookActive = false;
 		isLineMax = false;
 	}
 
+	// 적 던지기
 	public void ThrowEnemy(Transform enemy, Vector2 throwDir, float throwForce)
 	{
 		Collider2D enemyCol = enemy.GetComponent<Collider2D>();
@@ -311,7 +313,7 @@ public class GrapplingHook : MonoBehaviour
 		line.enabled = true;
 
 		// 훅 상태 초기화
-		isHookActive = false;
+		//isHookActive = false;
 		isLineMax = false;
 		hook.GetComponent<Hooking>().joint2D.enabled = false;
 		hook.gameObject.SetActive(false);
@@ -332,7 +334,7 @@ public class GrapplingHook : MonoBehaviour
 
 		while (elapsed < slowLength)
 		{
-			if (player.isGrounded || isAttach || isEnemyAttach)
+			if (player.isGrounded || isAttach)
 				break;
 
 			elapsed += Time.unscaledDeltaTime;
@@ -358,5 +360,4 @@ public class GrapplingHook : MonoBehaviour
 
 		rb.AddForce(new Vector2(horizontal * power, 1.2f), ForceMode2D.Impulse);
 	}
-
 }
