@@ -9,6 +9,7 @@ public class Enemy : MonoBehaviour, IDamageable
     EnemySpawner ownerSpawner;
     public EnumType.EnemyState state;   // 현재 상태
     Vector2 lastHitDir = Vector2.right; // 마지막으로 맞은 방향
+	private StageManager stageManager;
     public void Init(EnemySpawner spawner)
     {
         ownerSpawner = spawner;
@@ -62,9 +63,6 @@ public class Enemy : MonoBehaviour, IDamageable
     void Die()
     {
         SpawnBloodEffect(lastHitDir);
-
-        int randomNum = Random.Range(1, 4);
-        Debug.Log($"{randomNum}번 죽음 효과");
 
         ownerSpawner?.OnEnemyDead(this);
         GameManager.Instance.poolManager.ReturnToPool(gameObject);

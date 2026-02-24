@@ -18,7 +18,6 @@ public class PoolManager : MonoBehaviour
 
     void Awake()
     {
-        
         poolDict = new Dictionary<string, Queue<GameObject>>(); // 풀들을 저장할 Dictionary 초기화
         
         foreach (var pool in pools)     // 풀 정보 하나씩 처리
@@ -27,7 +26,7 @@ public class PoolManager : MonoBehaviour
             
             for (int i = 0; i < pool.initialSize; i++)  // 초기 개수만큼 미리 생성
             {
-                GameObject obj = Instantiate(pool.prefab);
+                GameObject obj = Instantiate(pool?.prefab);
 
                 // 반환 시 이름으로 풀을 구분하므로
                 // 반드시 prefabName으로 이름 통일

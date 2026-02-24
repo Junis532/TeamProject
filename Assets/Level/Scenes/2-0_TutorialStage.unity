@@ -5605,7 +5605,7 @@ GameObject:
   - component: {fileID: 183559330}
   - component: {fileID: 183559331}
   m_Layer: 11
-  m_Name: Global Volume
+  m_Name: Global Volume Main
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -13608,7 +13608,7 @@ GameObject:
   - component: {fileID: 1343994967}
   - component: {fileID: 1343994968}
   m_Layer: 13
-  m_Name: Global Volume (1)
+  m_Name: Global Volume Color
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -20247,9 +20247,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   audioManager: {fileID: 1297810229}
   poolManager: {fileID: 2094221131}
+  stageManager: {fileID: 0}
   dialogSystem: {fileID: 0}
   cameraShake: {fileID: 1819494826}
   playerController: {fileID: 538650812}
+  grapplingHook: {fileID: 0}
   playerInteraction: {fileID: 0}
   playerStats: {fileID: 11400000, guid: 85d0ceea785f7de46a030e9444c1e8b4, type: 2}
   enemyStats: {fileID: 11400000, guid: f5685b396f0123743a5d84581880763e, type: 2}

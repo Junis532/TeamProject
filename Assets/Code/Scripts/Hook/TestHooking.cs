@@ -229,13 +229,6 @@ public class TestHooking : MonoBehaviour
 		player.GetComponent<Rigidbody2D>().AddForce(new Vector2(horizontal * power, horizontal * 1.2f), ForceMode2D.Impulse);
 	}
 
-	// 줄 길어지게
-	private void IncreaseRopeLength()
-	{
-		if(targetLength < HookValue.maxSegmentLen)
-			targetLength += reelSpeed * Time.fixedDeltaTime;
-	}
-
 	// 줄 짧아지게
 	private void DecreaseRopeLength()
 	{

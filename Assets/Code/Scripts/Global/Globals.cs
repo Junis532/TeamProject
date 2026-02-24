@@ -1,8 +1,9 @@
+using UnityEngine;
+
 /// <summary>
 /// 글로벌 변수를 관리하는 파일
 /// **반드시 불변하는 값(읽기전용)만 지정할 것!!!**
 /// </summary>
-
 public class Globals
 {
     // 씬 이름(string) 관련 클래스
