@@ -1,29 +1,60 @@
+using System;
 using System.Collections;
 using UnityEngine;
+using EnumType;
 
 public class EnemySpawner : MonoBehaviour
 {
+	public enum SpawnerType { Normal, Control };
+
     [Header("스폰 정보")]
-    public string enemyPoolName;
+	public EnemyName enemyPoolName;
+	public SpawnerType spawnerType;
     public float respawnDelay = 3f;
 
-    Enemy currentEnemy;
-    bool isSpawning = false;
+    private Enemy currentEnemy;
+    private bool isSpawning = false;
+	private TestGrapplingHook grappling;
+	private EnemySpawnLinker linker;
 
-    void Start()
-    {
-        Spawn();
-    }
+	private void Awake()
+	{
+		grappling = GameManager.Instance.grapplingHook;
+		linker = GetComponent<EnemySpawnLinker>();
+	}
 
-    void Spawn()
+	private void Start()
+	{
+		switch(spawnerType)
+		{
+		case SpawnerType.Normal:
+			Spawn();
+			break;
+		}
+	}
+
+	private void Update()
+	{
+		switch (spawnerType)
+		{
+		case SpawnerType.Control:
+			if (grappling.hookingList.Count <= 0) return;
+			if (grappling.hookingList[0].GetComponent<EnemySpawnLinker>().ID == ("Spawn" + linker.ID))
+				Spawn();
+			break;
+		}
+	}
+
+	public void Spawn()
     {
         if (isSpawning) return;
 
         GameObject obj = GameManager.Instance.poolManager
-            .SpawnFromPool(enemyPoolName, transform.position, Quaternion.identity);
+            .SpawnFromPool(enemyPoolName.ToString(), transform.position, Quaternion.identity);
 
         if (obj == null) return;
 
+		obj.GetComponent<EnemySpawnLinker>().ID = linker.ID;
         currentEnemy = obj.GetComponent<Enemy>();
         currentEnemy.Init(this);
 
@@ -35,13 +66,19 @@ public class EnemySpawner : MonoBehaviour
         if (enemy != currentEnemy) return;
 
         currentEnemy = null;
-        StartCoroutine(RespawnRoutine());
+
+		switch(spawnerType)
+		{
+		case SpawnerType.Normal:	// 일반: 리스폰 되게
+			StartCoroutine(RespawnRoutine());
+			break;
+		}
+		isSpawning = false;
     }
 
     IEnumerator RespawnRoutine()
     {
         yield return new WaitForSeconds(respawnDelay);
-        isSpawning = false;
         Spawn();
     }
 }

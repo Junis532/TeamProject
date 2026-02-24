@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 7703846561344239737}
   - component: {fileID: 8137891331040114302}
   - component: {fileID: 3590063470112463751}
+  - component: {fileID: 127082835573817284}
   m_Layer: 7
   m_Name: LongRangeEnemy
   m_TagString: Enemy
@@ -188,7 +189,7 @@ MonoBehaviour:
   isLayer:
     serializedVersion: 2
     m_Bits: 64
-  speed: 3
+  speed: 0
   bulletPos: {x: -0.2, y: 0, z: 0}
   coolTime: 0.1
   startPos: {x: 14.95, y: 8.2, z: 0}
@@ -335,6 +336,19 @@ LineRenderer:
   m_UseWorldSpace: 1
   m_Loop: 0
   m_ApplyActiveColorSpace: 1
+--- !u!114 &127082835573817284
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2926934137677930879}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 855696686e85899419e8e5bf47d4a3bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemySpawnLinker
+  ID: 
 --- !u!1 &6918687451969211231
 GameObject:
   m_ObjectHideFlags: 0
