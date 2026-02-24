@@ -15,6 +15,8 @@ public class LongRangeEnemy : MonoBehaviour
     public float speed;
     [Header("총알이 생성 위치 오프셋 (적 기준)")]
     public Vector3 bulletPos;
+    [Header("라인 시작 위치 오프셋")]
+    public Vector3 lineStartOffset;
     [Header("한 번 발사 후 다음 발사까지의 쿨타임")]
     public float coolTime;
     private float currentTime;
@@ -59,6 +61,7 @@ public class LongRangeEnemy : MonoBehaviour
         line.enabled = false;
         line.startColor = Color.red;
         line.endColor = Color.red;
+        line.sortingOrder = 99;
         SetEnemyState(enemyState.Idle);
     }
 
@@ -172,11 +175,11 @@ public class LongRangeEnemy : MonoBehaviour
             {
                 if (dist < atkDistince)
                 {
-                    Vector2 origin = enemyTransform.position;
-                    Vector2 dir = (targetAimPoint.position - enemyTransform.position).normalized;
+                    Vector3 origin = transform.TransformPoint(lineStartOffset);
+                    Vector2 dir = (targetAimPoint.position - origin).normalized;
                     float rayDistance = Vector2.Distance(origin, targetAimPoint.position);
 
-                    int mask = ~LayerMask.GetMask("Player", "Enemy");
+                    int mask = ~LayerMask.GetMask("Player", "Enemy", "CameraBound");
 
                     RaycastHit2D hit = Physics2D.Raycast(
                         origin,

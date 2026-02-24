@@ -192,11 +192,12 @@ MonoBehaviour:
     m_Bits: 64
   speed: 0
   bulletPos: {x: 0.95, y: 0.45, z: 0}
-  coolTime: 0.3
+  lineStartOffset: {x: 0.95, y: 0.45, z: 0}
+  coolTime: 2
   startPos: {x: 14.95, y: 8.2, z: 0}
   maxTime: 0.1
-  detectDelay: 3
-  attackWindowTime: 3
+  detectDelay: 2
+  attackWindowTime: 1
   blinkSpeed: 15
   aiming: {fileID: 4880649156077743019, guid: 519d10fb12229d74dafa64b1e2644a16, type: 3}
   isGrabbed: 0
