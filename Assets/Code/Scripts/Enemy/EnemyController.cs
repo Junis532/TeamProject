@@ -76,7 +76,13 @@ public class EnemyController : MonoBehaviour
 
                     target.TakeDamage(1);       // 닿은 적에게 데미지 주기
                 }
-            }
+			}
+		}
+		else if(gameObject.CompareTag(tagName.throwingEnemy))
+		{
+			// 땅에 닿았을 경우 사망
+			if (!collision.gameObject.GetComponent<Enemy>().isAlive && gameObject.CompareTag(tagName.ground))
+				damageable.TakeDamage(1);   // 자기 자신도 데미지 받기
 		}
 	}
 

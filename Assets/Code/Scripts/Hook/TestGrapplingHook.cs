@@ -234,9 +234,6 @@ public class TestGrapplingHook : MonoBehaviour
 		if (elementCol != null && playerCol != null)            // 플레이어가 자기 자신을 잡았을 때 -> 충돌 무시
 			Physics2D.IgnoreCollision(elementCol, playerCol, true);
 
-		if (rb != null)                                     // Rigidbody가 있으면 Kinematic으로
-			rb.bodyType = RigidbodyType2D.Kinematic;
-
 		element.SetParent(transform);   // 플레이어 자식으로
 
 		isGrab = true;

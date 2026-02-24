@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 8137891331040114302}
   - component: {fileID: 3590063470112463751}
   - component: {fileID: 127082835573817284}
+  - component: {fileID: 4675905890510201858}
   m_Layer: 7
   m_Name: LongRangeEnemy
   m_TagString: Enemy
@@ -226,6 +227,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   bloodEffectPrefab: {fileID: 0}
   state: 0
+  isAlive: 1
 --- !u!120 &3590063470112463751
 LineRenderer:
   serializedVersion: 3
@@ -348,7 +350,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 855696686e85899419e8e5bf47d4a3bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawnLinker
-  ID: 
+  ID: 0
+  linkedObj: {fileID: 0}
+--- !u!114 &4675905890510201858
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2926934137677930879}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8f6d3c6e4250e84192f5b34ce9e71bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Elringus.SpriteGlow.Runtime::SpriteGlow.SpriteGlowEffect
+  glowColor: {r: 1, g: 0, b: 0, a: 1}
+  glowBrightness: 1.22
+  outlineWidth: 1
+  alphaThreshold: 0
+  drawOutside: 1
+  enableInstancing: 0
 --- !u!1 &6918687451969211231
 GameObject:
   m_ObjectHideFlags: 0

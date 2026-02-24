@@ -109,6 +109,7 @@ GameObject:
   - component: {fileID: 2003018862398154516}
   - component: {fileID: 539489379584834849}
   - component: {fileID: -665978317628940692}
+  - component: {fileID: 7658868569989530294}
   m_Layer: 7
   m_Name: Enemy
   m_TagString: Enemy
@@ -245,6 +246,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   bloodEffectPrefab: {fileID: 1693446582515497918, guid: 891e8414be3a4314b86c3de6aa522f5e, type: 3}
   state: 0
+  isAlive: 1
 --- !u!58 &9208315758566752643
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -380,3 +382,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 855696686e85899419e8e5bf47d4a3bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawnLinker
+  ID: 0
+  linkedObj: {fileID: 0}
+--- !u!114 &7658868569989530294
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6538411235587137134}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8f6d3c6e4250e84192f5b34ce9e71bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Elringus.SpriteGlow.Runtime::SpriteGlow.SpriteGlowEffect
+  glowColor: {r: 1, g: 0, b: 0, a: 1}
+  glowBrightness: 1.22
+  outlineWidth: 1
+  alphaThreshold: 0
+  drawOutside: 1
+  enableInstancing: 0
