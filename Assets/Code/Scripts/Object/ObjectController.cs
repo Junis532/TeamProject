@@ -41,6 +41,11 @@ public class ObjectController : MonoBehaviour
     {
         if (isGrounded && rigid.linearVelocity == Vector2.zero)
             gameObject.tag = tagName.obj;
+
+        if (gameObject.CompareTag(tagName.throwingEnemy))
+            gameObject.layer = LayerMask.NameToLayer(tagName.throwingObj);
+        else
+            gameObject.layer = LayerMask.NameToLayer(tagName.obj);
     }
     public void Init(ObjectSpawner spawner)
     {
