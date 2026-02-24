@@ -61,6 +61,7 @@ public class EnemyController : MonoBehaviour
                     Vector2 hitDir = (target.transform.position - transform.position).normalized;
                     target.SetHitDirection(hitDir);
 
+					target.gameObject.GetComponent<Enemy>().isAlive = false;	// 닿은 적 생존 여부 변경
                     target.TakeDamage(1);       // 닿은 적에게 데미지 주기
 					damageable.TakeDamage(1);   // 자기 자신도 데미지 받기
 				}

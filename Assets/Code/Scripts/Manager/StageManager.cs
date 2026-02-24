@@ -10,7 +10,7 @@ public class StageManager : MonoBehaviour
 	[Header("클리어 시 사라질 오브젝트 리스트")]
 	public List<Transform> disableObjectList;
 
-	/*[HideInInspector] */public bool isClear = false;
+	private bool isClear = false;
 
 	private void Update()
 	{
@@ -29,5 +29,15 @@ public class StageManager : MonoBehaviour
 
 			isClear = false;
 		}
+	}
+
+	// 목표 피격 수 감소
+	public void DecreaseTargetCnt()
+	{
+		--targetKillCnt;
+	}
+	public void DecreaseTargetCnt(int cnt)
+	{
+		targetKillCnt -= cnt;
 	}
 }
