@@ -22,4 +22,9 @@ public class GlobalUtil
 		if (isGrounded && rigid.linearVelocityY < 0f)       // y값 보정 (바닥 뚫림 방지)
 			rigid.linearVelocity = new Vector2(rigid.linearVelocity.x, 0f);
 	}
+	public static void EnemySpawnUpdate(Enemy e)
+	{
+		// 죽은 적 스포너의 반대편 스포너에서 적 생성되게 설정
+		e?.GetComponent<EnemySpawnLinker>().linkedObj.GetComponent<EnemySpawner>()?.Spawn();
+	}
 }

@@ -28,7 +28,6 @@ public class GameManager : MonoSingleton<GameManager> // 싱글톤 사용
 
     [Header("게임 실행 중 플레이어 스텟값 수정")]
     public PlayerStatsRuntime playerStatsRuntime;
-    public EnemyStatsRuntime enemyStatsRuntime;
 
     [HideInInspector] public Vector2 spawnPoint;            // 스폰포인트 관련
     [HideInInspector] public ESCKey escKey;					// 메뉴 관련

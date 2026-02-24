@@ -229,7 +229,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 855696686e85899419e8e5bf47d4a3bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawnLinker
-  ID: 
 --- !u!1 &3522393067608915479
 GameObject:
   m_ObjectHideFlags: 0

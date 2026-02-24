@@ -12,38 +12,33 @@ public class EnemySpawner : MonoBehaviour
 	public EnemyName enemyPoolName;
 	public SpawnerType spawnerType;
     public float respawnDelay = 3f;
+	public bool isStartSpawn = true;	// 시작 시 스폰시키는지 여부
 
     private Enemy currentEnemy;
     private bool isSpawning = false;
-	private TestGrapplingHook grappling;
 	private EnemySpawnLinker linker;
 
 	private void Awake()
 	{
-		grappling = GameManager.Instance.grapplingHook;
 		linker = GetComponent<EnemySpawnLinker>();
 	}
 
 	private void Start()
 	{
-		switch(spawnerType)
-		{
-		case SpawnerType.Normal:
+		if (isStartSpawn)
 			Spawn();
-			break;
-		}
 	}
 
 	private void Update()
 	{
-		switch (spawnerType)
-		{
-		case SpawnerType.Control:
-			if (grappling.hookingList.Count <= 0) return;
-			if (grappling.hookingList[0].GetComponent<EnemySpawnLinker>().ID == linker.ID)
-				Spawn();
-			break;
-		}
+		//switch (spawnerType)
+		//{
+		//case SpawnerType.Control:
+		//	// 플레이어가 잡은 적의 스폰ID와 자기자신과 연결된 Linker의 스폰ID가 같을 경우 스폰
+		//	//if (currentEnemy?.GetComponent<EnemySpawnLinker>().ID == linker.linkedObj.GetComponent<EnemySpawnLinker>().ID)
+		//	//	Spawn();
+		//	break;
+		//}
 	}
 
 	public void Spawn()
@@ -55,7 +50,9 @@ public class EnemySpawner : MonoBehaviour
 
         if (obj == null) return;
 
-		obj.GetComponent<EnemySpawnLinker>().ID = linker.ID;
+		EnemySpawnLinker objLinker = obj.GetComponent<EnemySpawnLinker>();
+		objLinker.ID = linker.ID;
+		objLinker.linkedObj = linker.linkedObj;
         currentEnemy = obj.GetComponent<Enemy>();
         currentEnemy.Init(this);
 
@@ -82,7 +79,6 @@ public class EnemySpawner : MonoBehaviour
 		if(currentEnemy != null)
 		{
 			GameManager.Instance.poolManager.ReturnToPool(currentEnemy.gameObject);
-			Debug.Log("Success Return");
 		}
 	}
 

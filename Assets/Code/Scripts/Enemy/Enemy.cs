@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Enemy : MonoBehaviour, IDamageable
 {
@@ -9,11 +10,13 @@ public class Enemy : MonoBehaviour, IDamageable
     EnemySpawner ownerSpawner;
     public EnumType.EnemyState state;   // 현재 상태
     Vector2 lastHitDir = Vector2.right; // 마지막으로 맞은 방향
-	private StageManager stageManager;
+	[HideInInspector] public bool isAlive = true;		// 생존여부
+
     public void Init(EnemySpawner spawner)
     {
         ownerSpawner = spawner;
-    }
+		isAlive = true;
+	}
 
     void OnEnable()
     {
@@ -21,7 +24,7 @@ public class Enemy : MonoBehaviour, IDamageable
         currStat = new EnemyStatsRuntime(GameManager.Instance.enemyStats);
     }
 
-    void Start()
+	void Start()
     {
         state = EnumType.EnemyState.Idle;   // 상태 초기화
         currStat = new EnemyStatsRuntime(GameManager.Instance.enemyStats);  // 각 스탯 초기화
@@ -64,7 +67,11 @@ public class Enemy : MonoBehaviour, IDamageable
     {
         SpawnBloodEffect(lastHitDir);
 
+		if(isAlive) GlobalUtil.EnemySpawnUpdate(this);      // TODO: 임시코드
+
         ownerSpawner?.OnEnemyDead(this);
         GameManager.Instance.poolManager.ReturnToPool(gameObject);
-    }
+
+		GameManager.Instance.stageManager?.DecreaseTargetCnt();     // 스테이지 점수 처리
+	}
 }

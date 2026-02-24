@@ -366,7 +366,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: -318060535259071168, guid: 594dfbd644dd4b4448a9c5b6774fe995, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -707,8 +707,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
   enemyPoolName: 2
-  spawnerType: 0
+  spawnerType: 1
   respawnDelay: 5
+  isStartSpawn: 1
 --- !u!212 &220977334
 SpriteRenderer:
   serializedVersion: 2
@@ -780,7 +781,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 855696686e85899419e8e5bf47d4a3bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawnLinker
-  ID: SpawnMonster_0
+  ID: 2
+  linkedObj: {fileID: 1534029963}
 --- !u!1 &237797983
 GameObject:
   m_ObjectHideFlags: 0
@@ -4909,7 +4911,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 8.58
+  orthographic size: 12.3
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -5010,7 +5012,6 @@ GameObject:
   m_Component:
   - component: {fileID: 747497537}
   - component: {fileID: 747497541}
-  - component: {fileID: 747497540}
   - component: {fileID: 747497539}
   - component: {fileID: 747497538}
   m_Layer: 0
@@ -5029,7 +5030,7 @@ Transform:
   m_GameObject: {fileID: 747497536}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 316.54297, y: -23.246101, z: -10}
+  m_LocalPosition: {x: 316.54297, y: -22.706215, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5113,14 +5114,6 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
---- !u!81 &747497540
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 747497536}
-  m_Enabled: 1
 --- !u!20 &747497541
 Camera:
   m_ObjectHideFlags: 0
@@ -5156,7 +5149,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 8.58
+  orthographic size: 12.3
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -5416,7 +5409,6 @@ MonoBehaviour:
   - {fileID: 2111736998}
   disableObjectList:
   - {fileID: 52055804}
-  isClear: 0
 --- !u!1 &785210802
 GameObject:
   m_ObjectHideFlags: 0
@@ -5794,10 +5786,6 @@ MonoBehaviour:
     hookSwingForce: 0
     hookThrowForce: 0
     maxSwingSpeed: 0
-  enemyStatsRuntime:
-    attack: 0
-    maxHP: 0
-    currentHP: 0
   spawnPoint: {x: 0, y: 0}
   escKey: {fileID: 815122429}
   sceneReloader: {fileID: 815122428}
@@ -12087,8 +12075,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
   enemyPoolName: 1
-  spawnerType: 0
+  spawnerType: 1
   respawnDelay: 5
+  isStartSpawn: 1
 --- !u!212 &1461761855
 SpriteRenderer:
   serializedVersion: 2
@@ -12160,7 +12149,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 855696686e85899419e8e5bf47d4a3bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawnLinker
-  ID: SpawnMonster_1
+  ID: 1
+  linkedObj: {fileID: 1850993826}
 --- !u!1 &1476301429
 GameObject:
   m_ObjectHideFlags: 0
@@ -12592,6 +12582,7 @@ MonoBehaviour:
   enemyPoolName: 1
   spawnerType: 1
   respawnDelay: 5
+  isStartSpawn: 0
 --- !u!212 &1534029966
 SpriteRenderer:
   serializedVersion: 2
@@ -12663,7 +12654,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 855696686e85899419e8e5bf47d4a3bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  ID: Monster_0
+  ID: 0
+  linkedObj: {fileID: 220977331}
 --- !u!1 &1555540763
 GameObject:
   m_ObjectHideFlags: 0
@@ -12731,7 +12723,7 @@ Transform:
   m_GameObject: {fileID: 1556723375}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 316.54297, y: -23.246101, z: -10}
+  m_LocalPosition: {x: 316.54297, y: -24.7261, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -12893,7 +12885,7 @@ MonoBehaviour:
     CustomLookAtTarget: 0
   Lens:
     FieldOfView: 34
-    OrthographicSize: 8.58
+    OrthographicSize: 12.3
     NearClipPlane: 0.3
     FarClipPlane: 1000
     Dutch: 0
@@ -14046,7 +14038,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1276845852994878136, guid: aacc80020f45af9459318ec226fa961d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -25.2
+      value: -26.68
       objectReference: {fileID: 0}
     - target: {fileID: 1276845852994878136, guid: aacc80020f45af9459318ec226fa961d, type: 3}
       propertyPath: m_LocalPosition.z
@@ -14520,6 +14512,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1796636129}
   m_CullTransparentMesh: 1
+--- !u!1 &1835184770
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1835184771}
+  - component: {fileID: 1835184772}
+  m_Layer: 0
+  m_Name: SpawnerManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1835184771
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1835184770}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1940537198}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1835184772
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1835184770}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4fe667d4246235d4e8319af8693bffdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpawnManager
 --- !u!1 &1850993826
 GameObject:
   m_ObjectHideFlags: 0
@@ -14569,6 +14605,7 @@ MonoBehaviour:
   enemyPoolName: 2
   spawnerType: 1
   respawnDelay: 5
+  isStartSpawn: 0
 --- !u!212 &1850993829
 SpriteRenderer:
   serializedVersion: 2
@@ -14640,7 +14677,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 855696686e85899419e8e5bf47d4a3bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawnLinker
-  ID: Monster_1
+  ID: 3
+  linkedObj: {fileID: 1461761852}
 --- !u!1 &1851973418
 GameObject:
   m_ObjectHideFlags: 0
@@ -15291,6 +15329,7 @@ Transform:
   - {fileID: 644586363}
   - {fileID: 508583506}
   - {fileID: 777187389}
+  - {fileID: 1835184771}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1944570678

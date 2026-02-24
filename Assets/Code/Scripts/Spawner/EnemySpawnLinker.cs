@@ -3,11 +3,6 @@ using UnityEngine;
 public class EnemySpawnLinker : MonoBehaviour
 {
 	[Header("ID")]
-	public string ID;
-
-	private void Start()
-	{
-		if (ID == null)
-			Debug.LogWarning("Doesn't exist ID");
-	}
+	public int ID;					// 아이디
+	public GameObject linkedObj;	// 연결된 오브젝트
 }

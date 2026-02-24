@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-
-using tagName = Globals.TagName;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.Splines;
 using UnityEngine.UI;
+using tagName = Globals.TagName;
 
 public class TestGrapplingHook : MonoBehaviour
 {
@@ -111,6 +111,8 @@ public class TestGrapplingHook : MonoBehaviour
 				{
 					AttachElement(hit.transform);   // 요소 잡기
 					isGrab = true;
+
+					GlobalUtil.EnemySpawnUpdate(hit.transform.GetComponent<Enemy>());      // TODO: 임시코드
 				}
 				// 땅과 부딪혔을 때
 				else if (hit.collider.CompareTag(tagName.ground))
