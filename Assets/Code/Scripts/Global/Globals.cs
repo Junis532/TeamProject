@@ -17,6 +17,7 @@ public class Globals
     public static class AnimationVarName
     {
         public static readonly string playerState = "playerState";  // 플레이어 상태
+        public static readonly string enemyState = "enemyState";  // 플레이어 상태
     }
 
     // 태그 이름(string) 관련 클래스

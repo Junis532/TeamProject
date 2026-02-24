@@ -1,5 +1,8 @@
+using EnumType;
 using UnityEngine;
-
+using UnityEngine.Playables;
+using enemyState = EnumType.EnemyState;
+using tagName = Globals.TagName;
 public class LongRangeEnemy : MonoBehaviour
 {
     [Header("감지 거리")]
@@ -30,7 +33,7 @@ public class LongRangeEnemy : MonoBehaviour
     public float blinkSpeed = 6f;
     [Header("플레이어에게 붙는 조준 프리팹")]
     public GameObject aiming;
-
+    private Animator animator;
     private GameObject currentAiming;
     private Transform enemyTransform;
     private Transform targetPlayer;
@@ -45,6 +48,7 @@ public class LongRangeEnemy : MonoBehaviour
 
     private void Start()
     {
+        animator = GetComponent<Animator>();
         startPos = transform.position;
         enemyTransform = transform;
         line = GetComponent<LineRenderer>();
@@ -55,6 +59,7 @@ public class LongRangeEnemy : MonoBehaviour
         line.enabled = false;
         line.startColor = Color.red;
         line.endColor = Color.red;
+        SetEnemyState(enemyState.Idle);
     }
 
     private void FixedUpdate()
@@ -119,9 +124,9 @@ public class LongRangeEnemy : MonoBehaviour
 
         float dir = targetPlayer.position.x - transform.position.x;
 
-        if (dir < 0 && !facingRight)
+        if (dir > 0 && !facingRight)
             Flip();
-        else if (dir > 0 && facingRight)
+        else if (dir < 0 && facingRight)
             Flip();
     }
 
@@ -146,8 +151,12 @@ public class LongRangeEnemy : MonoBehaviour
 			return;
 		}
 	}
+    void SetEnemyState(enemyState state)      // 적 상태 변경
+    {
+        animator.SetInteger(Globals.AnimationVarName.enemyState, (int)state);
+    }
 
-	public void HandleAttack()
+    public void HandleAttack()
     {
         if (targetPlayer != null && targetAimPoint != null)
         {
@@ -211,7 +220,10 @@ public class LongRangeEnemy : MonoBehaviour
                     if (currentTime <= 0)
                     {
                         GameManager.Instance.audioManager.EnemyShootSound(1f);      // 발사 사운드 재생
-                        GameManager.Instance.poolManager.SpawnFromPool("Bullet", transform.position + bulletPos, transform.rotation);   // Bullet 소환
+                        SetEnemyState(enemyState.Shoot);
+                        Vector3 spawnPos = transform.TransformPoint(bulletPos);     // 총알 소환
+
+                        GameManager.Instance.poolManager.SpawnFromPool("Bullet", spawnPos, transform.rotation);
                         currentTime = coolTime;
                         RemoveAiming();
                     }
@@ -220,6 +232,7 @@ public class LongRangeEnemy : MonoBehaviour
                     {
                         currentTime = coolTime;
                         ResetAttackState();
+                        SetEnemyState(enemyState.Idle);
                     }
                 }
             }
