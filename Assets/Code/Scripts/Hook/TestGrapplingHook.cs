@@ -134,6 +134,11 @@ public class TestGrapplingHook : MonoBehaviour
 
 					isAttach = true;    // 훅 활성 여부 변경
 				}
+				// 트리거에 부딪혔을 때 표시선 해제
+				else if (hit.collider.CompareTag(tagName.trigger))
+				{
+					lineAtoB.Stop();
+				}
 			}
 		}
 		// 좌클릭 해제시
