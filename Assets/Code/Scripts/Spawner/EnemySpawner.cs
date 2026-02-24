@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using EnumType;
+using Unity.VisualScripting;
 
 public class EnemySpawner : MonoBehaviour
 {
@@ -39,7 +40,7 @@ public class EnemySpawner : MonoBehaviour
 		{
 		case SpawnerType.Control:
 			if (grappling.hookingList.Count <= 0) return;
-			if (grappling.hookingList[0].GetComponent<EnemySpawnLinker>().ID == ("Spawn" + linker.ID))
+			if (grappling.hookingList[0].GetComponent<EnemySpawnLinker>().ID == linker.ID)
 				Spawn();
 			break;
 		}
@@ -76,7 +77,16 @@ public class EnemySpawner : MonoBehaviour
 		isSpawning = false;
     }
 
-    IEnumerator RespawnRoutine()
+	private void OnDisable()
+	{
+		if(currentEnemy != null)
+		{
+			GameManager.Instance.poolManager.ReturnToPool(currentEnemy.gameObject);
+			Debug.Log("Success Return");
+		}
+	}
+
+	IEnumerator RespawnRoutine()
     {
         yield return new WaitForSeconds(respawnDelay);
         Spawn();
