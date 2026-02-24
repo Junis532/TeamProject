@@ -235,7 +235,7 @@ public class TestGrapplingHook : MonoBehaviour
 			Physics2D.IgnoreCollision(elementCol, playerCol, true);
 
 		element.SetParent(transform);   // 플레이어 자식으로
-
+		element.GetComponent<Enemy>().isAlive = false;		// TODO: 임시코드
 		isGrab = true;
 	}
 

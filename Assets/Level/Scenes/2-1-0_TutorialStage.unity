@@ -5459,10 +5459,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SettingManager
   globalLight: {fileID: 992589460}
-  brightSlider: {fileID: 0}
+  brightSlider: {fileID: 2119966643}
   audioMixer: {fileID: 24100000, guid: fab71654d6c2f7f4bbcf9f45ab4f24e7, type: 2}
-  bgmSlider: {fileID: 0}
-  sfxSlider: {fileID: 0}
+  bgmSlider: {fileID: 2032740709}
+  sfxSlider: {fileID: 2119966643}
 --- !u!114 &815122428
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5475,7 +5475,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d049ff1d1737d7b48b9e9456241f1068, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SceneReloader
-  blackPanel: {fileID: 0}
+  blackPanel: {fileID: 990588383}
   fadeDuration: 1
 --- !u!114 &815122429
 MonoBehaviour:
@@ -5489,10 +5489,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60dbae27b1b2dc74e89c990bade5da63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ESCKey
-  optionPanel: {fileID: 0}
-  settingPanel: {fileID: 0}
-  leavePanel: {fileID: 0}
-  quitPanel: {fileID: 0}
+  optionPanel: {fileID: 972965254}
+  settingPanel: {fileID: 589927332}
+  leavePanel: {fileID: 476958898}
+  quitPanel: {fileID: 293198812}
 --- !u!114 &815122430
 MonoBehaviour:
   m_ObjectHideFlags: 0
