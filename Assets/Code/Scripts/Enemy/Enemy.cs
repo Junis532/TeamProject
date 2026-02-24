@@ -31,6 +31,21 @@ public class Enemy : MonoBehaviour, IDamageable
         currStat = new EnemyStatsRuntime(GameManager.Instance.enemyStats);  // 각 스탯 초기화
     }
 
+	private void OnCollisionEnter2D(Collision2D collision)
+	{
+		Debug.Log(isAlive + ", " + collision.gameObject.tag);
+		if (!isAlive)
+		{
+			if (collision.gameObject.CompareTag(TagName.enemy) || collision.gameObject.CompareTag(TagName.throwingEnemy))
+				return;
+			if (collision.gameObject.CompareTag(TagName.ground))
+			{
+				Debug.Log("Die");
+				Die();
+			}
+		}
+	}
+
 	public void TakeDamage(int attack)      // 데미지 입히기
     {
         GameManager.Instance.cameraShake.ShakeForSeconds(0.1f); // 카메라 흔들기
