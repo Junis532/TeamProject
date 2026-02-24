@@ -258,7 +258,13 @@ public class TestGrapplingHook : MonoBehaviour
 			droneEnemy.ResetAttackState();
 		}
 		GameManager.Instance.audioManager.HookThrowEnemySound(1f);  // 적 던지는 효과음
-		hookingList.Remove(element);
+        Collider2D elementCol = element.GetComponent<Collider2D>();
+        Collider2D enemyCol = element.GetComponent<Collider2D>();
+        Collider2D playerCol = GetComponent<Collider2D>();
+        Rigidbody2D rb = element.GetComponent<Rigidbody2D>();
+
+
+        hookingList.Remove(element);
 		element.SetParent(null);    // 부모 해제
 
 		if (element.gameObject.CompareTag(tagName.enemy))           // 태그가 적일 때
@@ -266,11 +272,10 @@ public class TestGrapplingHook : MonoBehaviour
 		else if (element.gameObject.CompareTag(tagName.obj))        // 태그가 오브젝트일 때
 			element.gameObject.tag = tagName.throwingObj;           // 던져지는 오브젝트 태그로 변경
 
-		Collider2D enemyCol = element.GetComponent<Collider2D>();
-		Collider2D playerCol = GetComponent<Collider2D>();
-		Rigidbody2D rb = element.GetComponent<Rigidbody2D>();
+        if (elementCol != null && playerCol != null)
+            Physics2D.IgnoreCollision(elementCol, playerCol, false);
 
-		if (rb != null)
+        if (rb != null)
 		{
 			rb.bodyType = RigidbodyType2D.Dynamic;
 			rb.linearVelocity = Vector2.zero;

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 656204391477629153}
   - component: {fileID: 9177812969513029414}
   - component: {fileID: 1836610660294533465}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Rock
   m_TagString: Bullet
   m_Icon: {fileID: 0}
@@ -82,7 +82,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 100
   m_MaskInteraction: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
   m_Color: {r: 0.9056604, g: 0.19651109, b: 0.19651109, a: 1}
@@ -169,6 +169,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3e14302315f388429b07ff46ccfe690, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyRock
-  speed: 1.6
   lifeTime: 3
   flyTime: 0.8

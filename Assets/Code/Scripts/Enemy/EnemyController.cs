@@ -25,6 +25,12 @@ public class EnemyController : MonoBehaviour
 	{
         if (isGrounded && rigid.linearVelocity == Vector2.zero)
             gameObject.tag = tagName.enemy;
+
+        if (gameObject.CompareTag(tagName.throwingEnemy))
+            gameObject.layer = LayerMask.NameToLayer(tagName.throwingEnemy);
+
+        else
+            gameObject.layer = LayerMask.NameToLayer(tagName.enemy);
     }
     public void CheckGround(Collision2D collision)
     {
