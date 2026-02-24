@@ -151,8 +151,8 @@ public class TestGrapplingHook : MonoBehaviour
 				isAttach = false;
 				hasPlayedAttachSound = false;
 			}
-
 		}
+
 		// 요소를 잡고 있고, 마우스를 우클릭 했을 경우
 		else if (isGrab && Mouse.current.rightButton.wasPressedThisFrame)
 		{

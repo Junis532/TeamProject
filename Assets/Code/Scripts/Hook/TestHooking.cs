@@ -21,14 +21,15 @@ public class TestHooking : MonoBehaviour
 	/* 길이 제어 */
 	[Header("훅 길이 제어")]
 	public float lengthChangeSpeed = 8f;     // 길이 변화 부드러움
-	public float reelSpeed = 15f;            // 감기 속도
+	public float reelSpeed = 30f;            // 감기 속도
 	float currentLength; // 현재 길이
 	float targetLength;  // 목표 길이
 
 	private GameObject player;		// 플레이어 오브젝트
-    private LineRenderer line;		// 훅 줄
+    private LineRenderer line;      // 훅 줄
+	private int checkLineCnt = 5;
     [HideInInspector] public int segmentCnt;		// 점 갯수
-    [HideInInspector] public float lineLen;			// 줄 길이
+    [HideInInspector] public float lineLen;         // 줄 길이
 
 	private List<HookSegment> hookSegments = new List<HookSegment>();
 	private bool isPlayedDraftSound = false;        // 사운드 재생 여부
@@ -67,20 +68,20 @@ public class TestHooking : MonoBehaviour
 
 		HandleRopeLengthInput(); // 입력 -> 목표 길이 변경
 
+		ClampPlayerDistance();  // 플레이어 거리 제한
+
 		// 목표 길이를 부드럽게 따라감
 		currentLength = Mathf.Lerp(currentLength, targetLength, Time.fixedDeltaTime * lengthChangeSpeed);
 		lineLen = currentLength;
-		if (segmentCnt > Mathf.Max(HookValue.minSegmentLen, (int)(lineLen / HookValue.segmentLen)) + 5)
+		if (segmentCnt > Mathf.Max(HookValue.minSegmentLen, (int)(lineLen / HookValue.segmentLen)) + checkLineCnt)
 		{
-			segmentCnt -= 5;
+			segmentCnt -= checkLineCnt;
 			line.positionCount = segmentCnt;
-			hookSegments.RemoveRange(hookSegments.Count - 5 - 1, 5);
+			hookSegments.RemoveRange(hookSegments.Count - checkLineCnt - 1, checkLineCnt);
 		}
 
-		ClampPlayerDistance();  // 플레이어 거리 제한
-
-		HookShootAction();      // 훅 발사 액션
-		RenderLine();           // 라인 그리기
+		HookShootAction();			// 훅 발사 액션
+		RenderLine();				// 라인 그리기
 	}
 
 	// 플레이어가 로프 길이 밖으로 못 나가게 제한
@@ -191,11 +192,11 @@ public class TestHooking : MonoBehaviour
 	// 줄 길이 변경
 	void HandleRopeLengthInput()
 	{
-		// 훅 부딪힌 위치 아래 거리의 90% 길이로 길이 보정
+		// 훅 부딪힌 위치 아래 거리의 85% 길이로 길이 보정
 		Vector2 destinyPos = destiny + new Vector2(0f, -1f);    // 땅과 부딪힌 지점의 1만큼 아래로 위치 설정 (버그 방지)
 		LayerMask mask = LayerMask.GetMask(TagName.ground);		// 레이캐스트 땅만 맞출 수 있도록 마스크 생성
-        RaycastHit2D hit = Physics2D.Raycast(destinyPos, Vector2.down, HookValue.maxSegmentLen, mask);        // 자기 위치에서 dir 방향으로 광선 발사
-
+        RaycastHit2D hit = Physics2D.Raycast(destinyPos, Vector2.down, HookValue.maxSegmentLen, mask);        // 자기 위치에서 아래방향으로 광선 발사
+		Debug.DrawLine(destinyPos, hit.point);
 		if(hit && Vector2.Distance(destiny, hit.point) * 0.85f < currentLength)
             DecreaseRopeLength();
 
@@ -219,6 +220,15 @@ public class TestHooking : MonoBehaviour
 		targetLength = Mathf.Clamp(targetLength, HookValue.minSegmentLen, lineLen);
 	}
 
+	// 힘 주기
+	public void ApplyHookImpulse(Vector2 hookPos)
+	{
+		Vector2 dir = (hookPos - (Vector2)transform.position).normalized;
+		float horizontal = dir.x > 0 ? 1f : -1f;
+		float power = 1.5f; // 힘 세기
+		player.GetComponent<Rigidbody2D>().AddForce(new Vector2(horizontal * power, horizontal * 1.2f), ForceMode2D.Impulse);
+	}
+
 	// 줄 길어지게
 	private void IncreaseRopeLength()
 	{
@@ -230,7 +240,10 @@ public class TestHooking : MonoBehaviour
 	private void DecreaseRopeLength()
 	{
 		if (targetLength > HookValue.minSegmentLen)
-			targetLength -= reelSpeed * Time.fixedDeltaTime;
+		{
+			targetLength -= reelSpeed * Time.deltaTime;
+			ApplyHookImpulse(destiny);  // 가속도 주기
+		}
 	}
 
 	// 세그먼트 구조체

@@ -1,10 +1,13 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
 {
+	public enum enemyName { Enemy, FlexibleEnemy, LongRangeEnemy };
+
     [Header("스폰 정보")]
-    public string enemyPoolName;
+	public enemyName enemyPoolName;
     public float respawnDelay = 3f;
 
     Enemy currentEnemy;
@@ -20,7 +23,7 @@ public class EnemySpawner : MonoBehaviour
         if (isSpawning) return;
 
         GameObject obj = GameManager.Instance.poolManager
-            .SpawnFromPool(enemyPoolName, transform.position, Quaternion.identity);
+            .SpawnFromPool(enemyPoolName.ToString(), transform.position, Quaternion.identity);
 
         if (obj == null) return;
 
