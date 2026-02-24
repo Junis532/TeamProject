@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 8137891331040114302}
   - component: {fileID: 3590063470112463751}
   - component: {fileID: 127082835573817284}
+  - component: {fileID: 1857723691693922763}
   m_Layer: 7
   m_Name: LongRangeEnemy
   m_TagString: Enemy
@@ -89,7 +90,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 101
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 4723107735738678597, guid: 4e4a1f6274a1ccf4fb2b981b4a2c467b, type: 3}
+  m_Sprite: {fileID: -3296362929794034626, guid: ab06ed3cd76f2984fb913f7977c0c872, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -137,7 +138,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.625, y: 1.25}
+    oldSize: {x: 3, y: 3}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -190,8 +191,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   speed: 0
-  bulletPos: {x: -0.2, y: 0, z: 0}
-  coolTime: 0.1
+  bulletPos: {x: 0.95, y: 0.45, z: 0}
+  coolTime: 0.3
   startPos: {x: 14.95, y: 8.2, z: 0}
   maxTime: 0.1
   detectDelay: 3
@@ -349,6 +350,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawnLinker
   ID: 
+--- !u!95 &1857723691693922763
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2926934137677930879}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 45277e4cdbc20b045b47255ad7c4150a, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &6918687451969211231
 GameObject:
   m_ObjectHideFlags: 0
