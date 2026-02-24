@@ -26,6 +26,7 @@ namespace EnumType
 	{
 		Idle = 0,    // 기본
 		Thrown,        // 던져짐
+		Shoot,
 	}
 
 	// 몬스터 종류 (이름)
