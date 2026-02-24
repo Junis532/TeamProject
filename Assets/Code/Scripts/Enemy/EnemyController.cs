@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.InputSystem.XR.Haptics;
+using UnityEngine.Splines;
 using UnityEngine.Windows.Speech;
+using static Globals;
 using tagName = Globals.TagName;    // 태그
 
 /// <summary>
@@ -64,6 +66,8 @@ public class EnemyController : MonoBehaviour
 					target.gameObject.GetComponent<Enemy>().isAlive = false;	// 닿은 적 생존 여부 변경
                     target.TakeDamage(1);       // 닿은 적에게 데미지 주기
 					damageable.TakeDamage(1);   // 자기 자신도 데미지 받기
+
+					target.isAlive = false;
 				}
 			}
 			// 오브젝트와 닿았을 경우
@@ -76,7 +80,7 @@ public class EnemyController : MonoBehaviour
 
                     target.TakeDamage(1);       // 닿은 적에게 데미지 주기
                 }
-            }
+			}
 		}
 	}
 

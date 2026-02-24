@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static Globals;
 
 public class Enemy : MonoBehaviour, IDamageable
 {
@@ -30,7 +31,7 @@ public class Enemy : MonoBehaviour, IDamageable
         currStat = new EnemyStatsRuntime(GameManager.Instance.enemyStats);  // 각 스탯 초기화
     }
 
-    public void TakeDamage(int attack)      // 데미지 입히기
+	public void TakeDamage(int attack)      // 데미지 입히기
     {
         GameManager.Instance.cameraShake.ShakeForSeconds(0.1f); // 카메라 흔들기
 

@@ -78,7 +78,7 @@ public class EnemySpawner : MonoBehaviour
 	{
 		if(currentEnemy != null)
 		{
-			GameManager.Instance.poolManager.ReturnToPool(currentEnemy.gameObject);
+			GameManager.Instance.poolManager?.ReturnToPool(currentEnemy.gameObject);
 		}
 	}
 

@@ -134,7 +134,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: -0.120239794}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -144,7 +144,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1, y: 1.7947687}
   m_EdgeRadius: 0
 --- !u!50 &3918364501620919624
 Rigidbody2D:
@@ -227,6 +227,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   bloodEffectPrefab: {fileID: 0}
   state: 0
+  isAlive: 1
 --- !u!120 &3590063470112463751
 LineRenderer:
   serializedVersion: 3
@@ -349,7 +350,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 855696686e85899419e8e5bf47d4a3bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawnLinker
-  ID: 
+  ID: 0
+  linkedObj: {fileID: 0}
 --- !u!95 &1857723691693922763
 Animator:
   serializedVersion: 7

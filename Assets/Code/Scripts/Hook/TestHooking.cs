@@ -205,15 +205,15 @@ public class TestHooking : MonoBehaviour
 		{
 			DecreaseRopeLength();
 
-			if (!isPlayedDraftSound)
-			{
-				GameManager.Instance.audioManager.HookDraftSound(1f);
-				isPlayedDraftSound = true;
-			}
+			//if (!isPlayedDraftSound)
+			//{
+			//	GameManager.Instance.audioManager.HookDraftSound(1f);
+			//	isPlayedDraftSound = true;
+			//}
 		}
 		if (Keyboard.current.spaceKey.wasReleasedThisFrame)
 		{
-			GameManager.Instance.audioManager.StopSFX();
+			//GameManager.Instance.audioManager.StopSFX();
 			isPlayedDraftSound = false;
 		}
 
@@ -226,7 +226,7 @@ public class TestHooking : MonoBehaviour
 		Vector2 dir = (hookPos - (Vector2)transform.position).normalized;
 		float horizontal = dir.x > 0 ? 1f : -1f;
 		float power = 1.5f; // Èû ¼¼±â
-		player.GetComponent<Rigidbody2D>().AddForce(new Vector2(horizontal * power, horizontal * 1.2f), ForceMode2D.Impulse);
+		player.GetComponent<Rigidbody2D>().AddForce(new Vector2(horizontal * power, horizontal * power), ForceMode2D.Impulse);
 	}
 
 	// ÁÙ Âª¾ÆÁö°Ô
