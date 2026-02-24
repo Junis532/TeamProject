@@ -334,6 +334,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 52055804}
+  - component: {fileID: 52055805}
   m_Layer: 0
   m_Name: Spawners
   m_TagString: Untagged
@@ -356,10 +357,22 @@ Transform:
   m_Children:
   - {fileID: 1534029964}
   - {fileID: 1461761853}
-  - {fileID: 1850993827}
   - {fileID: 220977332}
+  - {fileID: 1850993827}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &52055805
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 52055803}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e2107ce9d1fad049a7e2b90776da591, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpawnerController
 --- !u!1 &81385778
 GameObject:
   m_ObjectHideFlags: 0
@@ -646,8 +659,9 @@ GameObject:
   - component: {fileID: 220977332}
   - component: {fileID: 220977334}
   - component: {fileID: 220977333}
+  - component: {fileID: 220977335}
   m_Layer: 0
-  m_Name: LongLangeEnemySpawner_1
+  m_Name: LongLangeEnemySpawner_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -681,6 +695,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
   enemyPoolName: 2
+  spawnerType: 0
   respawnDelay: 5
 --- !u!212 &220977334
 SpriteRenderer:
@@ -741,6 +756,19 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!114 &220977335
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 220977331}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 855696686e85899419e8e5bf47d4a3bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemySpawnLinker
+  ID: SpawnMonster_0
 --- !u!1 &237797983
 GameObject:
   m_ObjectHideFlags: 0
@@ -5312,6 +5340,7 @@ MonoBehaviour:
   dialogSystem: {fileID: 0}
   cameraShake: {fileID: 1269720488}
   playerController: {fileID: 1736528808}
+  grapplingHook: {fileID: 1736528812}
   playerInteraction: {fileID: 0}
   playerStats: {fileID: 11400000, guid: 85d0ceea785f7de46a030e9444c1e8b4, type: 2}
   enemyStats: {fileID: 11400000, guid: f5685b396f0123743a5d84581880763e, type: 2}
@@ -5330,6 +5359,7 @@ MonoBehaviour:
     attack: 0
     maxHP: 0
     currentHP: 0
+  spawnPoint: {x: 0, y: 0}
   escKey: {fileID: 815122429}
   sceneReloader: {fileID: 815122428}
 --- !u!1 &819111354
@@ -8271,7 +8301,7 @@ MonoBehaviour:
     CustomLookAtTarget: 0
   Lens:
     FieldOfView: 34
-    OrthographicSize: 8.58
+    OrthographicSize: 12.3
     NearClipPlane: 0.3
     FarClipPlane: 1000
     Dutch: 0
@@ -8438,7 +8468,7 @@ Transform:
   m_GameObject: {fileID: 1286297711}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 316.54297, y: -23.246098, z: -10}
+  m_LocalPosition: {x: 316.54297, y: -22.706215, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -8563,7 +8593,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 8.58
+  orthographic size: 12.3
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -11910,6 +11940,7 @@ GameObject:
   - component: {fileID: 1461761853}
   - component: {fileID: 1461761855}
   - component: {fileID: 1461761854}
+  - component: {fileID: 1461761856}
   m_Layer: 0
   m_Name: FlexibleEnemySpawner_1
   m_TagString: Untagged
@@ -11945,6 +11976,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
   enemyPoolName: 1
+  spawnerType: 0
   respawnDelay: 5
 --- !u!212 &1461761855
 SpriteRenderer:
@@ -12005,6 +12037,19 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!114 &1461761856
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1461761852}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 855696686e85899419e8e5bf47d4a3bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemySpawnLinker
+  ID: SpawnMonster_1
 --- !u!1 &1476301429
 GameObject:
   m_ObjectHideFlags: 0
@@ -12364,6 +12409,7 @@ GameObject:
   - component: {fileID: 1534029964}
   - component: {fileID: 1534029966}
   - component: {fileID: 1534029965}
+  - component: {fileID: 1534029967}
   m_Layer: 0
   m_Name: FlexibleEnemySpawner_0
   m_TagString: Untagged
@@ -12399,6 +12445,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
   enemyPoolName: 1
+  spawnerType: 1
   respawnDelay: 5
 --- !u!212 &1534029966
 SpriteRenderer:
@@ -12459,6 +12506,19 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!114 &1534029967
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1534029963}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 855696686e85899419e8e5bf47d4a3bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  ID: Monster_0
 --- !u!1 &1551661143
 GameObject:
   m_ObjectHideFlags: 0
@@ -13672,6 +13732,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1276845852994878136, guid: aacc80020f45af9459318ec226fa961d, type: 3}
   m_PrefabInstance: {fileID: 1736528807}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1736528812 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3291911846861460203, guid: aacc80020f45af9459318ec226fa961d, type: 3}
+  m_PrefabInstance: {fileID: 1736528807}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65550b7c13a56b94dbb7bcd81963efb4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TestGrapplingHook
 --- !u!1 &1739284005
 GameObject:
   m_ObjectHideFlags: 0
@@ -14055,8 +14126,9 @@ GameObject:
   - component: {fileID: 1850993827}
   - component: {fileID: 1850993829}
   - component: {fileID: 1850993828}
+  - component: {fileID: 1850993830}
   m_Layer: 0
-  m_Name: LongLangeEnemySpawner_0
+  m_Name: LongLangeEnemySpawner_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14090,6 +14162,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
   enemyPoolName: 2
+  spawnerType: 1
   respawnDelay: 5
 --- !u!212 &1850993829
 SpriteRenderer:
@@ -14150,6 +14223,19 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!114 &1850993830
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1850993826}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 855696686e85899419e8e5bf47d4a3bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemySpawnLinker
+  ID: Monster_1
 --- !u!1 &1910431258
 GameObject:
   m_ObjectHideFlags: 0

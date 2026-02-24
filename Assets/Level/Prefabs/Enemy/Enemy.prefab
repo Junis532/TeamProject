@@ -108,6 +108,7 @@ GameObject:
   - component: {fileID: 5513257364536213435}
   - component: {fileID: 2003018862398154516}
   - component: {fileID: 539489379584834849}
+  - component: {fileID: -665978317628940692}
   m_Layer: 7
   m_Name: Enemy
   m_TagString: Enemy
@@ -367,3 +368,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyCameraMark
   markerPrefab: {fileID: 685821831552522956, guid: 6a6182231a1333d4f8c850b67994c2f6, type: 3}
+--- !u!114 &-665978317628940692
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6538411235587137134}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 855696686e85899419e8e5bf47d4a3bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemySpawnLinker
+  ID: 
