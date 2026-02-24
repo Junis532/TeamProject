@@ -18,7 +18,6 @@ GameObject:
   - component: {fileID: 3590063470112463751}
   - component: {fileID: 127082835573817284}
   - component: {fileID: 1857723691693922763}
-  - component: {fileID: 4675905890510201858}
   m_Layer: 7
   m_Name: LongRangeEnemy
   m_TagString: Enemy
@@ -135,7 +134,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: -0.120239794}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -145,7 +144,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1, y: 1.7947687}
   m_EdgeRadius: 0
 --- !u!50 &3918364501620919624
 Rigidbody2D:
@@ -353,24 +352,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawnLinker
   ID: 0
   linkedObj: {fileID: 0}
---- !u!114 &4675905890510201858
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2926934137677930879}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e8f6d3c6e4250e84192f5b34ce9e71bc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Elringus.SpriteGlow.Runtime::SpriteGlow.SpriteGlowEffect
-  glowColor: {r: 1, g: 0, b: 0, a: 1}
-  glowBrightness: 1.22
-  outlineWidth: 1
-  alphaThreshold: 0
-  drawOutside: 1
-  enableInstancing: 0
 --- !u!95 &1857723691693922763
 Animator:
   serializedVersion: 7
