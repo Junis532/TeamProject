@@ -22,10 +22,10 @@ public class StageManager : MonoBehaviour
 		{
 			// 나타내기
 			foreach(Transform t in activeObjectList)
-				t?.gameObject.SetActive(true);
+				t.gameObject?.SetActive(true);
 			// 없애기
 			foreach (Transform t in disableObjectList)
-				t?.gameObject.SetActive(false);
+				t.gameObject?.SetActive(false);
 
 			isClear = false;
 		}
