@@ -11,12 +11,13 @@ public class Enemy : MonoBehaviour, IDamageable
     EnemySpawner ownerSpawner;
     public EnumType.EnemyState state;   // 현재 상태
     Vector2 lastHitDir = Vector2.right; // 마지막으로 맞은 방향
-	[HideInInspector] public bool isAlive = true;		// 생존여부
+	[HideInInspector] public bool isDie = false;  // 죽음 여부
+	[HideInInspector] public bool isGrounded;     // 땅 체크
 
-    public void Init(EnemySpawner spawner)
+	public void Init(EnemySpawner spawner)
     {
         ownerSpawner = spawner;
-		isAlive = true;
+		isDie = false;
 	}
 
     void OnEnable()
@@ -37,9 +38,10 @@ public class Enemy : MonoBehaviour, IDamageable
 
         currStat.currentHP -= attack;
 
-        if (currStat.currentHP <= 0)
-            Die();
-    }
+		if (currStat.currentHP <= 0)
+			DieEnemy();		// 죽음 처리
+	}
+
     public void SetHitDirection(Vector2 hitDir)     // 방향만 저장하는 함수
     {
         lastHitDir = hitDir.normalized;
@@ -64,15 +66,21 @@ public class Enemy : MonoBehaviour, IDamageable
         Destroy(blood, 1f);
     }
 
-    void Die()
-    {
-        SpawnBloodEffect(lastHitDir);
+    public void DieEnemy()      // 적 죽음처리
+	{
+		if(!isDie)
+		{
+			isDie = true;       // 죽은 상태로 변경
+			ownerSpawner?.OnEnemyDead(this);	// 스포너가 있으면 스폰되게
+			GlobalUtil.EnemySpawnUpdate(this);	// 스포너 업데이트
+		}
+	}
 
-		if(isAlive) GlobalUtil.EnemySpawnUpdate(this);      // TODO: 임시코드
-
-        ownerSpawner?.OnEnemyDead(this);
-        GameManager.Instance.poolManager.ReturnToPool(gameObject);
-
+	public void RemoveEnemy()	// 적 사라짐 처리
+	{
+		if (!isDie) DieEnemy();	// 적이 죽지 않았다면 죽음 처리
+		SpawnBloodEffect(lastHitDir);       // 피 이펙트
+		GameManager.Instance.poolManager.ReturnToPool(gameObject);  // 풀로 되돌림
 		GameManager.Instance.stageManager?.DecreaseTargetCnt();     // 스테이지 점수 처리
 	}
 }
