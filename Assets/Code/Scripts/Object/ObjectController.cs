@@ -42,10 +42,11 @@ public class ObjectController : MonoBehaviour
         if (isGrounded && rigid.linearVelocity == Vector2.zero)
             gameObject.tag = tagName.obj;
 
-        if (gameObject.CompareTag(tagName.throwingEnemy))
+		// 현재 태그에 따라 레이어마스크 대상 변경하기
+		if (gameObject.CompareTag(tagName.throwingObj))
             gameObject.layer = LayerMask.NameToLayer(tagName.throwingObj);
-        else
-            gameObject.layer = LayerMask.NameToLayer(tagName.obj);
+        else if (gameObject.CompareTag(tagName.obj))
+			gameObject.layer = LayerMask.NameToLayer(tagName.obj);
     }
     public void Init(ObjectSpawner spawner)
     {

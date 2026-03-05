@@ -216,7 +216,7 @@ public class FlexibleEnemy : MonoBehaviour
     }
     bool IsGrounded()
     {
-        return GetComponent<EnemyController>().isGrounded;      // 땅 체크 함수 호출
+        return GetComponent<Enemy>().isGrounded;      // 땅 체크 함수 호출
     }
 
     void Jump()

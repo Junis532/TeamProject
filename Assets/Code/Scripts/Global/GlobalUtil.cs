@@ -5,6 +5,7 @@ using UnityEngine;
 /// </summary>
 public class GlobalUtil
 {
+	// 바닥 체크 함수
 	public void CheckGround(Transform transform, Collision2D collision, Rigidbody2D rigid)
 	{
 		bool isGrounded = false;
@@ -22,9 +23,11 @@ public class GlobalUtil
 		if (isGrounded && rigid.linearVelocityY < 0f)       // y값 보정 (바닥 뚫림 방지)
 			rigid.linearVelocity = new Vector2(rigid.linearVelocity.x, 0f);
 	}
+
+	// 스포너 업데이트 함수
 	public static void EnemySpawnUpdate(Enemy e)
 	{
 		// 죽은 적 스포너의 반대편 스포너에서 적 생성되게 설정
-		e?.GetComponent<EnemySpawnLinker>().linkedObj.GetComponent<EnemySpawner>()?.Spawn();
+		e?.GetComponent<EnemySpawnLinker>().linkedObj?.GetComponent<EnemySpawner>().Spawn();
 	}
 }

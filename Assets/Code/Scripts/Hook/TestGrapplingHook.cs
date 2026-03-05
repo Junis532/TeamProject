@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering.Universal;
@@ -111,8 +112,6 @@ public class TestGrapplingHook : MonoBehaviour
 				{
 					AttachElement(hit.transform);   // 요소 잡기
 					isGrab = true;
-
-					GlobalUtil.EnemySpawnUpdate(hit.transform.GetComponent<Enemy>());      // TODO: 임시코드
 				}
 				// 땅과 부딪혔을 때
 				else if (hit.collider.CompareTag(tagName.ground))
@@ -227,9 +226,9 @@ public class TestGrapplingHook : MonoBehaviour
 		if (droneEnemy != null)
 			droneEnemy.isGrabbed = true;
 
-		EnemyController enemyController = element.GetComponent<EnemyController>();
-		if (enemyController != null)
-			enemyController.isGrounded = false;
+		Enemy enemy = element.GetComponent<Enemy>();
+		if (enemy != null)
+			enemy.isGrounded = false;
 
 		hookingList.Add(element);   // 리스트에 추가하기
 		Collider2D elementCol = element.GetComponent<Collider2D>();
@@ -238,9 +237,12 @@ public class TestGrapplingHook : MonoBehaviour
 
 		if (elementCol != null && playerCol != null)            // 플레이어가 자기 자신을 잡았을 때 -> 충돌 무시
 			Physics2D.IgnoreCollision(elementCol, playerCol, true);
+		
+		// 적을 잡았을 경우
+		if(element.CompareTag(tagName.enemy) || element.CompareTag(tagName.throwingEnemy))
+			element.GetComponent<Enemy>().DieEnemy();       // 잡은 적 죽음 처리
 
 		element.SetParent(transform);   // 플레이어 자식으로
-		element.GetComponent<Enemy>().isAlive = false;		// TODO: 임시코드
 		isGrab = true;
 	}
 
