@@ -85,8 +85,8 @@ public class TestGrapplingHook : MonoBehaviour
 	// 훅 사용 (후킹, 해제, 던지기)
 	private void ActiveHook()
 	{
-		// 훅이 활성화되지 않고 좌클릭 했을 때
-		if (!isAttach && Mouse.current.leftButton.wasPressedThisFrame)
+		// 훅이 활성화되지 않고 우클릭 했을 때
+		if (!isAttach && Mouse.current.rightButton.wasPressedThisFrame)
 		{
             GameManager.Instance.audioManager.HookShootSound(0.5f);								// 갈고리 발사 효과음
             Vector2 worldPos = mainCam.ScreenToWorldPoint(Mouse.current.position.ReadValue());  // 월드 좌표
@@ -140,8 +140,8 @@ public class TestGrapplingHook : MonoBehaviour
 				}
 			}
 		}
-		// 좌클릭 해제시
-		else if (Mouse.current.leftButton.wasReleasedThisFrame)
+		// 우클릭 해제시
+		else if (Mouse.current.rightButton.wasReleasedThisFrame)
 		{
 			// 훅 할당 해제
 			if (curHook != null)
@@ -159,8 +159,8 @@ public class TestGrapplingHook : MonoBehaviour
 			}
 		}
 
-		// 요소를 잡고 있고, 마우스를 우클릭 했을 경우
-		else if (isGrab && Mouse.current.rightButton.wasPressedThisFrame)
+		// 요소를 잡고 있고, 마우스를 좌클릭 했을 경우
+		else if (isGrab && Mouse.current.leftButton.wasPressedThisFrame)
 		{
 			Vector2 worldPos = mainCam.ScreenToWorldPoint(Mouse.current.position.ReadValue());	// 월드 좌표
 			Vector2 dir = (worldPos - (Vector2)transform.position).normalized;      // 광선 방향
