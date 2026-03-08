@@ -1,538 +1,314 @@
-using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.InputSystem;
-using UnityEngine.Rendering;
-using UnityEngine.Rendering.Universal;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.Rendering.Universal;
+using UnityEngine.Splines;
+using UnityEngine.UI;
 using tagName = Globals.TagName;
 
-public class GrapplingHook : MonoBehaviour
+public class TestGrapplingHook : MonoBehaviour
 {
-	[Header("ë©”ì¸ ì¹´ë©”ë¼")]
-	public Camera mainCam;
-	[Header("Global Volume ì˜¤ë¸Œì íŠ¸")]
-	public Volume globalVolume;
-	[Header("Line ì˜¤ë¸Œì íŠ¸ LineRenderer")]
-	public LineRenderer line;
-	[Header("visualizerLine í”„ë¦¬í©")]
+	[Header("±×·¡ÇÃ¸µ ÈÅ °¥°í¸® ÇÁ¸®Æé")]
+	public GameObject hook;
+	[Header("ÀÓ½Ã Ç¥½Ã¼± visualizerLine ÇÁ¸®Æé")]
 	public GameObject visualizerLine;
-	[Header("Hook ì˜¤ë¸Œì íŠ¸ Transform")]
-	public Transform hook;
-	[Header("í›… í™œì„±í™” ìƒíƒœ ì—¬ë¶€")]
-	public bool isHookActive;
-	[Header("ê·¸ë˜í”Œë§ í›… ê¸¸ì´ê°€ ìµœëŒ€ì¸ì§€")]
-	public bool isLineMax;
-	[Header("ê·¸ë˜í”Œë§ í›… ì‚¬ìš© ì¤‘ì¸ì§€ ì—¬ë¶€")]
-	public bool isAttach;
-	[Header("ê·¸ë˜í”Œë§ í›…ìœ¼ë¡œ ë¬´ì–¸ê°€ë¥¼ ì¡ì•˜ëŠ”ì§€ ì—¬ë¶€")]
-	public bool isAttachElement;
-	[Header("ìŠ¬ë¡œìš° ë¹„ìœ¨")]
-	public float slowFactor;
-	[Header("ì›ë˜ ì†ë„ë¡œ ë³µê·€í•˜ëŠ” ë° ê±¸ë¦¬ëŠ” ì‹œê°„")]
-	public float slowLength;
-	[Header("ì˜¤í”„ì…‹ (ì¡íŒ ì˜¤ë¸Œì íŠ¸ ì´ë™ ë³´ì •ê°’)")]
-	public Vector3 followOffset = new Vector3(1f, 0f, 0f);  // ê¸°ë³¸ê°’: (1, 0, 0)
-	[Header("íšŒì „ ì—ë„ˆì§€ ê²Œì´ì§€ UI")]
-	public Slider swingGauge;
-	[Header("ì €ì¥ê°€ëŠ¥í•œ ìµœëŒ€ íšŒì „ ìˆ˜(ì—ë„ˆì§€ ì œí•œ)")]
-	public int maxTurns = 1;
-	[Header("íšŒì „ ì¤‘ì´ì§€ ì•Šì„ ë•Œ ê²Œì´ì§€ ê°ì†Œ ì†ë„")]
-	public float decreaseSpeed = 400f;
-	[Header("íšŒì „í•  ë•Œ íšŒì „ëŸ‰ ì¦ê°€ ë°°ìœ¨")]
-	public float increaseMultiplier = 1.0f;
-	[Header("íšŒì „ìœ¼ë¡œ ì¸ì •í•  ìµœì†Œ ê°ë„ ë³€í™”")]
-	public float turnMinDelta = 0.3f;
-	[Header("ì†ë„ ì¦ê°€ ë°°ìœ¨")]
-	public float boostMultiplier = 1.5f;
-	[Header("Boost ì§€ì† ì‹œê°„")]
-	public float boostDuration = 0.5f;
+	[Header("¿ÀÇÁ¼Â (ÀâÈù ¿ÀºêÁ§Æ® ÀÌµ¿ º¸Á¤°ª)")]
+	public Vector3 followOffset = new Vector3(1f, 0f, 0f);  // ±âº»°ª: (1, 0, 0)
 
-	private Vector2 mousedir;
+	/* Ä«¸Ş¶ó */
+	private Camera mainCam;     // ¸ŞÀÎ Ä«¸Ş¶ó
+
+	/* ÈÅ */
+	[HideInInspector] public bool isAttach;			// ÈÅ »ç¿ë ¿©ºÎ
+	[HideInInspector] public bool isGrab;			// ÈÅ ÀâÀ½ ¿©ºÎ
+	[HideInInspector] public GameObject curHook;	// ÇöÀç ÈÅ
+	[HideInInspector] public List<Transform> hookingList = new List<Transform>();    // ±×·¡ÇÃ¸µ ÈÅÀ¸·Î ÀâÀº ¿ä¼Ò ¸®½ºÆ®
+	private float distance;							// ÈÅ ±æÀÌ
+
+	/* ÇÃ·¹ÀÌ¾î */
+	private PlayerController player;
+
+	/* ÀÓ½Ã Ç¥½Ã¼± */
+	private LineRendererAtoB lineAtoB;  // ÀÓ½Ã Ç¥½Ã¼± °ü·Ã µ¥ÀÌÅÍ
+
+	/* »ç¿îµå */
 	private bool hasPlayedAttachSound = false;
-	private bool isPlayedDraftSound = false;
-	private float distance = 0f;                            // í‘œì‹œì„  ê¸¸ì´
-	private float accumulatedAngle = 0f;                    // ëˆ„ì  íšŒì „ëŸ‰(ê²Œì´ì§€ ìˆ˜ì¹˜)
-	private float maxAngle;                                 // maxTurns íšŒì „ ì‹œ ìµœëŒ€ ê°ë„(= 360 * maxTurns)
-	private float previousAngle;                            // ì´ì „ í”„ë ˆì„ì˜ ê°ë„
-	private bool angleInitialized = false;                  // ì²« í”„ë ˆì„ ê°ë„ ì´ˆê¸°í™” ì—¬ë¶€
-	private int storedDirection = 0;                        // ì €ì¥ëœ íšŒì „ ë°©í–¥(1=ì‹œê³„, -1=ë°˜ì‹œê³„, 0=ì—†ìŒ)
-	private Coroutine currentBoost;
-	private Coroutine slowCoroutine;                        // ìŠ¬ë¡œìš° íš¨ê³¼ ì½”ë£¨í‹´
-	private Rigidbody2D rigid;
-	private SpriteRenderer sprite;
-	private DistanceJoint2D hookJoint;
+
+	/* ºÎ½ºÆ® */
+	private Coroutine currentBoost;         // ÇöÀç ºÎ½ºÆ® ÄÚ·çÆ¾
+	public float boostMultiplier = 1.5f;    // ¼Óµµ Áõ°¡ ¹èÀ²
+	public float boostDuration = 0.5f;      // Boost Áö¼Ó ½Ã°£
+
+	/* ½½·Î¿ì¸ğ¼Ç */
+	[Header("½½·Î¿ì ºñÀ²")]
+	public float slowFactor;            // ½½·Î¿ì ºñÀ²
+	[Header("½½·Î¿ì º¹±Í ½Ã°£")]
+	public float slowLength;            // ½½·Î¿ì º¹±Í ½Ã°£
 	private ColorAdjustments colorAdjustments;
-	private List<Transform> hookingList = new List<Transform>();    // ê·¸ë˜í”Œë§ í›…ìœ¼ë¡œ ì¡ì€ ìš”ì†Œ ë¦¬ìŠ¤íŠ¸
-	private LineRendererAtoB lineAtoB;                      // ì„ì‹œ í‘œì‹œì„  ì˜¤ë¸Œì íŠ¸
+	private SpriteRenderer sprite;
 
 	private void Awake()
 	{
-		rigid = GetComponent<Rigidbody2D>();
 		sprite = GetComponent<SpriteRenderer>();
-		maxAngle = maxTurns * 360f;
 	}
 
-	void Start()
+	private void Start()
 	{
-		GameObject lineObj = Instantiate(visualizerLine);       // ì˜¤ë¸Œì íŠ¸ ì¸ìŠ¤í„´ìŠ¤í™”
-		lineAtoB = lineObj.GetComponent<LineRendererAtoB>();
-
-		// ë¼ì¸ì„ ê·¸ë¦¬ëŠ” í¬ì§€ì…˜ì„ ë‘ê°œë¡œ ì„¤ì •í•˜ê³  (PositionCount)
-		// í•œ ì ì€ Playerì˜ í¬ì§€ì…˜, í•œ ì ì€ Hookì˜ í¬ì§€ì…˜ìœ¼ë¡œ ì„¤ì • (SetPosition)
-		line.positionCount = 2;
-		line.endWidth = line.startWidth = 0.05f;
-		line.SetPosition(0, transform.position);
-		line.SetPosition(1, hook.position);
-		line.useWorldSpace = true;
+		/* ÈÅ */
 		isAttach = false;
-		hook.gameObject.SetActive(false);
-		hookJoint = hook.GetComponent<DistanceJoint2D>();
-		distance = GameManager.Instance.playerStats.hookDistance;
+		isGrab = false;
 
-		if (globalVolume == null)
+		/* ÇÃ·¹ÀÌ¾î */
+		player = GameManager.Instance.playerController;
+
+		/* ÀÓ½Ã Ç¥½Ã¼± */
+		lineAtoB = Instantiate(visualizerLine).GetComponent<LineRendererAtoB>();    // ÀÎ½ºÅÏ½ºÈ­ ½ÃÅ² ¿ÀºêÁ§Æ®ÀÇ ½ºÅ©¸³Æ® ÄÄÆ÷³ÍÆ® ÀúÀåÇÏ±â
+		distance = GameManager.Instance.playerStatsRuntime.hookDistance;            // Ç¥½Ã¼± ±æÀÌ ºÒ·¯¿À±â
+
+		/* Ä«¸Ş¶ó */
+		mainCam = Camera.main;      // ¸ŞÀÎ Ä«¸Ş¶ó Á¤º¸ °¡Á®¿À±â
+	}
+
+	private void Update()
+	{
+		CursorPathMarking();    // ÀÓ½Ã Ç¥½Ã¼± ±×¸®±â
+		ActiveHook();           // ÈÅ »ç¿ë
+	}
+
+	private void LateUpdate()
+	{
+		MoveElementPos();       // ÀâÈù ¿ä¼ÒÀÇ ÁÂÇ¥ ÀÌµ¿
+	}
+
+	// ÈÅ »ç¿ë (ÈÄÅ·, ÇØÁ¦, ´øÁö±â)
+	private void ActiveHook()
+	{
+		// ÈÅÀÌ È°¼ºÈ­µÇÁö ¾Ê°í ÁÂÅ¬¸¯ ÇßÀ» ¶§
+		if (!isAttach && Mouse.current.leftButton.wasPressedThisFrame)
 		{
-			Debug.LogError("Global Volumeì´ í• ë‹¹ë˜ì§€ ì•Šì•˜ìŒ");
+            GameManager.Instance.audioManager.HookShootSound(0.5f);								// °¥°í¸® ¹ß»ç È¿°úÀ½
+            Vector2 worldPos = mainCam.ScreenToWorldPoint(Mouse.current.position.ReadValue());  // ¿ùµå ÁÂÇ¥
+			Vector2 dir = (worldPos - (Vector2)transform.position).normalized;                  // ±¤¼± ¹æÇâ
+            LayerMask mask = ~LayerMask.GetMask(tagName.player, tagName.camera);                // ·¹ÀÌÄÉ½ºÆ® ¶¥¸¸ ¸ÂÃâ ¼ö ÀÖµµ·Ï ¸¶½ºÅ© »ı¼º
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, distance, mask);      // ÀÚ±â À§Ä¡¿¡¼­ dir ¹æÇâÀ¸·Î ±¤¼± ¹ß»ç
+
+			if (hit)
+			{
+				// È¿°úÀ½ Àç»ı
+				if (!hasPlayedAttachSound)      // °¥°í¸® or Àû¿¡ Ã³À½ ºÙ¾úÀ» ¶§
+				{
+					if (hit.collider.CompareTag(tagName.enemy))
+						GameManager.Instance.audioManager.HookAttachEnemySound(0.7f);
+					if (hit.collider.CompareTag(tagName.ground))
+						GameManager.Instance.audioManager.HookAttachMetalSound(0.7f);
+					hasPlayedAttachSound = true;
+				}
+
+				// ºÎµúÈù ¿ä¼Ò°¡ Àû or ´øÁ®Áö´Â Àû or ¿ÀºêÁ§Æ® or ´øÁ®Áö´Â ¿ÀºêÁ§Æ®ÀÏ °æ¿ì
+				if (!isGrab && (hit.collider.CompareTag(tagName.enemy) || hit.collider.CompareTag(tagName.throwingEnemy)
+					|| hit.collider.CompareTag(tagName.obj) || hit.collider.CompareTag(tagName.throwingObj)))
+				{
+					AttachElement(hit.transform);   // ¿ä¼Ò Àâ±â
+					isGrab = true;
+				}
+				// ¶¥°ú ºÎµúÇûÀ» ¶§
+				else if (hit.collider.CompareTag(tagName.ground))
+				{
+					// °¡¼Óµµ Á¦°Å ÈÄ Áõ°¡
+					Rigidbody2D playerRb = player.GetComponent<Rigidbody2D>();
+
+					TestHooking hooking;
+					Vector2 destiny = hit.point;    // Raycast·Î ½úÀ» ¶§ Ãæµ¹µÈ À§Ä¡
+					curHook = Instantiate(hook, transform.position, Quaternion.identity);   // ÇÃ·¹ÀÌ¾î À§Ä¡¿¡ ÈÅ »ı¼º
+
+					hooking = curHook.GetComponent<TestHooking>();
+					hooking.destiny = destiny;
+					hooking.isHit = true;
+
+					// Á¡ »çÀÌ °Å¸®¸¦ °í·ÁÇÏ¿© °Å¸®¸¸Å­ÀÇ Á¡ °¹¼ö ±¸ÇÏ±â
+					float len = Vector2.Distance(transform.position, destiny);
+					hooking.lineLen = len;
+
+					isAttach = true;    // ÈÅ È°¼º ¿©ºÎ º¯°æ
+				}
+				// Æ®¸®°Å¿¡ ºÎµúÇûÀ» ¶§ Ç¥½Ã¼± ÇØÁ¦
+				else if (hit.collider.CompareTag(tagName.trigger))
+				{
+					lineAtoB.Stop();
+				}
+			}
+		}
+		// ÁÂÅ¬¸¯ ÇØÁ¦½Ã
+		else if (Mouse.current.leftButton.wasReleasedThisFrame)
+		{
+			// ÈÅ ÇÒ´ç ÇØÁ¦
+			if (curHook != null)
+				Destroy(curHook);
+
+			if (isAttach)
+			{
+				// ÁÙ ³õ¾ÒÀ» ¶§ °¡¼Óµµ Á¶Á¤
+				Rigidbody2D playerRb = player.GetComponent<Rigidbody2D>();
+				Vector2 slow = new Vector2(0.25f, 0.7f);
+				playerRb.linearVelocity *= slow;
+
+				isAttach = false;
+				hasPlayedAttachSound = false;
+			}
+		}
+
+		// ¿ä¼Ò¸¦ Àâ°í ÀÖ°í, ¸¶¿ì½º¸¦ ¿ìÅ¬¸¯ ÇßÀ» °æ¿ì
+		else if (isGrab && Mouse.current.rightButton.wasPressedThisFrame)
+		{
+			Vector2 worldPos = mainCam.ScreenToWorldPoint(Mouse.current.position.ReadValue());	// ¿ùµå ÁÂÇ¥
+			Vector2 dir = (worldPos - (Vector2)transform.position).normalized;      // ±¤¼± ¹æÇâ
+			ThrowElement(hookingList[0], dir);  // Àû ´øÁö±â
+			isGrab = false;
+		}
+	}
+
+	// ÀÓ½Ã Ç¥½Ã¼± ±×¸®±â
+	public void CursorPathMarking()
+	{
+		if (Mouse.current == null) return;
+		if (GameManager.Instance.dialogSystem && GameManager.Instance.dialogSystem.isAction) return;    // »óÈ£ÀÛ¿ë ÁßÀÏ °æ¿ì Ç¥½Ã¼± ±×¸®Áö ¾ÊÀ½
+
+		Vector3 mouseScreen = Mouse.current.position.ReadValue();                       // ½ºÅ©¸° ÁÂÇ¥ ±¸ÇÏ±â
+		mouseScreen.z = Mathf.Abs(mainCam.transform.position.z);                        // z°ª º¸Á¤
+		Vector2 worldPos = mainCam.ScreenToWorldPoint(mouseScreen);                     // ¿ùµå ÁÂÇ¥
+		Vector2 dir = (worldPos - (Vector2)transform.position).normalized;              // ±¤¼± ¹æÇâ
+		LayerMask mask = ~LayerMask.GetMask(tagName.player, tagName.camera);                            // ·¹ÀÌÄÉ½ºÆ® ÇÃ·¹ÀÌ¾î Ãæµ¹ ¹«½Ã
+		RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, distance, mask);  // ÀÚ±â À§Ä¡¿¡¼­ dir ¹æÇâÀ¸·Î ±¤¼± ¹ß»ç
+
+		if (isAttach)   // ÈÅ »ç¿ë ÁßÀÏ °æ¿ì ¼± ºñÈ°¼ºÈ­
+		{
+			lineAtoB.Stop();
 			return;
 		}
 
-		if (!globalVolume.profile.TryGet(out colorAdjustments))
-			Debug.LogError("Volume Profileì— ì—†ìŒ");
-	}
-	//void Update()
-	//{
-	//	if (TimelineController.isTimelinePlaying) return;   // ì»·ì”¬ ì¬ìƒ ì¤‘ì¼ ë•ŒëŠ” ê°ˆê³ ë¦¬ ë¶ˆê°€
-
-	//	UpdateLine();
-	//	HandleHookShoot();
-	//	HandleHookMove();
-	//	HandleAttachState();
-	//	HandleSwingGauge();
-	//	HandleThrow();
-	//	CursorPathMarking();
-	//}
-
-	//void LateUpdate()
-	//{
-	//	MoveElementPos();
-	//}
-
-	void UpdateLine() // ë¼ì¸ ì—…ë°ì´íŠ¸
-	{
-		line.SetPosition(0, transform.position);
-		line.SetPosition(1, hook.position);
-	}
-	void HandleHookShoot() // í›… ë°œì‚¬ ì…ë ¥ì²˜ë¦¬
-	{
-		if (Mouse.current.leftButton.wasPressedThisFrame && !isHookActive && !isAttach)
+		if (hit)        // ±¤¼±¿¡ ºÎµúÈ÷´Â ¿ÀºêÁ§Æ®°¡ ÀÖÀ¸¸é ¼± È°¼ºÈ­
 		{
-			GameManager.Instance.audioManager.HookShootSound(0.7f); // ê°ˆê³ ë¦¬ ë°œì‚¬ íš¨ê³¼ìŒ
-			hook.position = transform.position;
-			Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-			mouseWorldPos.z = 0f;
-
-			mousedir = mouseWorldPos - transform.position;
-			isHookActive = true;
-			hook.gameObject.SetActive(true);
-			line.enabled = true;
-		}
-	}
-
-	void HandleHookMove() // í›… ì´ë™ / ë³µê·€ ì²˜ë¦¬
-	{
-		if (!isHookActive || isAttach) return; // í›…ì´ ë°œì‚¬ëœ ìƒíƒœì´ê³ , ì•„ì§ ìµœëŒ€ ì‚¬ê±°ë¦¬ì— ë„ë‹¬í•˜ì§€ ì•Šì•˜ì„ ë•Œ
-
-		if (!isLineMax)
-		{
-			// ë§ˆìš°ìŠ¤ ë°©í–¥ìœ¼ë¡œ í›…ì„ ì „ì§„ì‹œí‚´
-			hook.Translate(mousedir.normalized * Time.deltaTime * GameManager.Instance.playerStatsRuntime.hookSpeed);
-			// í”Œë ˆì´ì–´ì™€ í›… ì‚¬ì´ì˜ ê±°ë¦¬ê°€ ìµœëŒ€ ì‚¬ê±°ë¦¬ë³´ë‹¤ ì»¤ì§€ë©´
-			if (Vector2.Distance(transform.position, hook.position) > GameManager.Instance.playerStatsRuntime.hookDistance)
-				isLineMax = true;   // ìµœëŒ€ ì‚¬ê±°ë¦¬ ë„ë‹¬ ìƒíƒœë¡œ ì „í™˜
-		}
-		else    // í›…ì´ ìµœëŒ€ ì‚¬ê±°ë¦¬ì— ë„ë‹¬í•œ ì´í›„
-		{
-			// í›…ì„ í”Œë ˆì´ì–´ ìœ„ì¹˜ë¡œ ë¶€ë“œëŸ½ê²Œ ë˜ëŒë¦¼
-			hook.position = Vector2.MoveTowards(hook.position, transform.position, Time.deltaTime * GameManager.Instance.playerStatsRuntime.hookSpeed);
-			if (Vector2.Distance(transform.position, hook.position) < 0.1f)     // í›…ì´ ê±°ì˜ í”Œë ˆì´ì–´ ìœ„ì¹˜ê¹Œì§€ ëŒì•„ì™”ì„ ê²½ìš°
+			if (hit.collider.CompareTag(tagName.npc))   // ºÎµúÈù ¿ä¼Ò°¡ NPCÀÏ °æ¿ì ¼± ºñÈ°¼ºÈ­
 			{
-				// í›… ìƒíƒœ ì´ˆê¸°í™”
-				isHookActive = false;
-				isLineMax = false;
-				hook.gameObject.SetActive(false);
+				lineAtoB.Stop();
+				return;
 			}
+
+			// ºÎµúÈù ¿ä¼Ò¿¡ µû¶ó ¼± »ö»ó º¯°æ
+			// ¹º°¡¸¦ µé°í ÀÖÀ» ¶§ ¿ÀºêÁ§Æ®³ª ¸ó½ºÅÍ°¡ ºÎµúÇûÀ» °æ¿ì
+			if (isGrab && (hit.collider.CompareTag(tagName.enemy) || hit.collider.CompareTag(tagName.obj)))
+				lineAtoB.SetLineColor(new Color(1f, 0.2f, 0.2f));
+			else if (hit.collider.CompareTag(tagName.obj))
+				lineAtoB.SetLineColor(new Color(0.49f, 0.85f, 0.45f));
+			else
+				lineAtoB.SetLineColor(new Color(0.18f, 0.76f, 1f));
+
+			// ºÎµúÈù ¿ä¼Ò°¡ Æ®¸®°Å°¡ ¾Æ´Ò °æ¿ì¸¸ ¼± ±×¸®±â
+			if(!(hit.collider.CompareTag(tagName.trigger)))
+				lineAtoB.Play(transform.position, hit.point);
+		}
+		else
+			lineAtoB.Stop();
+	}
+
+	// Àâ±â
+	public void AttachElement(Transform element)
+	{
+		if (hookingList.Contains(element) || isGrab) return;
+
+		LongRangeEnemy enemyAttack = element.GetComponent<LongRangeEnemy>();
+		if (enemyAttack != null)
+			enemyAttack.isGrabbed = true;
+
+		DroneEnemy droneEnemy = element.GetComponent<DroneEnemy>();
+		if (droneEnemy != null)
+			droneEnemy.isGrabbed = true;
+
+		Enemy enemy = element.GetComponent<Enemy>();
+		if (enemy != null)
+			enemy.isGrounded = false;
+
+		hookingList.Add(element);   // ¸®½ºÆ®¿¡ Ãß°¡ÇÏ±â
+		Collider2D elementCol = element.GetComponent<Collider2D>();
+		Collider2D playerCol = GetComponent<Collider2D>();
+		Rigidbody2D rb = element.GetComponent<Rigidbody2D>();
+
+		if (elementCol != null && playerCol != null)            // ÇÃ·¹ÀÌ¾î°¡ ÀÚ±â ÀÚ½ÅÀ» Àâ¾ÒÀ» ¶§ -> Ãæµ¹ ¹«½Ã
+			Physics2D.IgnoreCollision(elementCol, playerCol, true);
+		
+		// ÀûÀ» Àâ¾ÒÀ» °æ¿ì
+		if(element.CompareTag(tagName.enemy) || element.CompareTag(tagName.throwingEnemy))
+			element.GetComponent<Enemy>().DieEnemy();       // ÀâÀº Àû Á×À½ Ã³¸®
+
+		element.SetParent(transform);   // ÇÃ·¹ÀÌ¾î ÀÚ½ÄÀ¸·Î
+		isGrab = true;
+	}
+
+	// ´øÁö±â
+	public void ThrowElement(Transform element, Vector2 throwDir)
+	{
+		if (!hookingList.Contains(element)) return;
+		LongRangeEnemy longRangeEnemy = element.GetComponent<LongRangeEnemy>();
+		if (longRangeEnemy != null)
+		{
+			longRangeEnemy.isGrabbed = false;
+			longRangeEnemy.ResetAttackState();
+		}
+
+		DroneEnemy droneEnemy = element.GetComponent<DroneEnemy>();
+		if (droneEnemy != null)
+		{
+			droneEnemy.isGrabbed = false;
+			droneEnemy.ResetAttackState();
+		}
+		GameManager.Instance.audioManager.HookThrowEnemySound(1f);  // Àû ´øÁö´Â È¿°úÀ½
+        Collider2D elementCol = element.GetComponent<Collider2D>();
+        Collider2D enemyCol = element.GetComponent<Collider2D>();
+        Collider2D playerCol = GetComponent<Collider2D>();
+        Rigidbody2D rb = element.GetComponent<Rigidbody2D>();
+
+
+        hookingList.Remove(element);
+		element.SetParent(null);    // ºÎ¸ğ ÇØÁ¦
+
+		if (element.gameObject.CompareTag(tagName.enemy))           // ÅÂ±×°¡ ÀûÀÏ ¶§
+			element.gameObject.tag = tagName.throwingEnemy;         // ´øÁ®Áö´Â Àû ÅÂ±×·Î º¯°æ
+		else if (element.gameObject.CompareTag(tagName.obj))        // ÅÂ±×°¡ ¿ÀºêÁ§Æ®ÀÏ ¶§
+			element.gameObject.tag = tagName.throwingObj;           // ´øÁ®Áö´Â ¿ÀºêÁ§Æ® ÅÂ±×·Î º¯°æ
+
+        if (elementCol != null && playerCol != null)
+            Physics2D.IgnoreCollision(elementCol, playerCol, false);
+
+        if (rb != null)
+		{
+			rb.bodyType = RigidbodyType2D.Dynamic;
+			rb.linearVelocity = Vector2.zero;
+			rb.AddForce(throwDir.normalized * GameManager.Instance.playerStatsRuntime.hookThrowForce, ForceMode2D.Impulse);
+		}
+
+		if (hookingList.Count == 0)
+		{
+			isGrab = false;
+			hasPlayedAttachSound = false;
 		}
 	}
 
-	//void HandleAttachState() // ê·¸ë˜í”Œë§ ë¶™ì–´ ìˆì„ ë•Œ ì²˜ë¦¬
-	//{
-	//	if (!isAttach) return;
+	// À§Ä¡ ÀÌµ¿ÇÏ±â(±×·¡ÇÃ¸µ ÈÅÀ¸·Î Àâ¾ÒÀ» °æ¿ì¸¸)
+	public void MoveElementPos()
+	{
+		if (!isGrab) return;
 
-	//	if (!hasPlayedAttachSound)      // ê°ˆê³ ë¦¬ or ì ì— ì²˜ìŒ ë¶™ì—ˆì„ ë•Œ
-	//	{
-	//		GameManager.Instance.audioManager.HookAttachSound(1f);
-	//		hasPlayedAttachSound = true;
-	//	}
+		SpriteRenderer playerSprite = GetComponent<SpriteRenderer>();   // ÈÅ¿¡ ÀÖ´Â ÇÃ·¹ÀÌ¾î SpriteRenderer °¡Á®¿À±â
 
-	//	HandleDetachInput();
-	//	HandleRopeDraft();
-	//}
+		for (int i = 0; i < hookingList.Count; i++)
+		{
+			if (hookingList[i] == null) continue;
 
-	//void HandleDetachInput() // ë¶™ì€ ìƒíƒœì—ì„œ í•´ì œ ì²˜ë¦¬
-	//{
-	//	if (!Mouse.current.leftButton.wasReleasedThisFrame) return;     // ë§ˆìš°ìŠ¤ë¥¼ ë• ì„ ë•Œë§Œ í•´ì œ
-
-	//	isAttach = false;
-	//	isHookActive = false;
-	//	isLineMax = false;
-	//	hasPlayedAttachSound = false;
-
-	//	hook.GetComponent<Hooking>().joint2D.enabled = false;
-	//	hook.gameObject.SetActive(false);
-
-	//	if (slowCoroutine != null)
-	//		StopCoroutine(slowCoroutine);
-
-	//	slowCoroutine = StartCoroutine(SlowRoutine());
-	//	Boost(accumulatedAngle / maxAngle);
-	//}
-
-	//void HandleRopeDraft() // ì¤„ ë‹¹ê¸°ê¸° ì²˜ë¦¬
-	//{
-	//	if (Keyboard.current.spaceKey.isPressed)    // ìŠ¤í˜ì´ìŠ¤ ì¤„ ë‹¹ê¸°ê¸°
-	//	{
-	//		if (hookJoint != null && hookJoint.enabled)
-	//		{
-	//			hookJoint.distance = Mathf.Max(0.5f, hookJoint.distance - 0.1f);
-
-	//			if (!isPlayedDraftSound)
-	//			{
-	//				GameManager.Instance.audioManager.HookDraftSound(1f);
-	//				isPlayedDraftSound = true;
-	//			}
-	//		}
-	//	}
-	//	if (Keyboard.current.spaceKey.wasReleasedThisFrame)
-	//	{
-	//		GameManager.Instance.audioManager.StopSFX();
-	//		isPlayedDraftSound = false;
-	//	}
-	//}
-
-	//void HandleSwingGauge() // íšŒì „ ê²Œì´ì§€ ì²˜ë¦¬ ë¶„ë¦¬
-	//{
-	//	if (!isAttach)
-	//	{
-	//		ResetSwingGauge();
-	//		return;
-	//	}
-
-	//	swingGauge.gameObject.SetActive(true);  // ê²Œì´ì§€ UI í™œì„±í™” 
-
-	//	bool noInput = GameManager.Instance.playerController.inputVec == Vector2.zero;
-	//	Vector2 hookPos = hook.position;        // ê°ˆê³ ë¦¬(íšŒì „ ì¤‘ì‹¬) ì¢Œí‘œ
-	//	Vector2 playerPos = transform.position; // í”Œë ˆì´ì–´ ì¢Œí‘œ
-	//	Vector2 dir = (playerPos - hookPos).normalized; // ê°ˆê³ ë¦¬ -> í”Œë ˆì´ì–´ ë°©í–¥ ë²¡í„°
-	//	float angleNow = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg; // í˜„ì¬ ê°ë„(0~360Â°)
-
-	//	// ì²« í”„ë ˆì„ì—ì„œëŠ” ì´ì „ ê°ë„ê°€ ì—†ìœ¼ë¯€ë¡œ ì´ˆê¸°í™”
-	//	if (!angleInitialized)
-	//	{
-	//		previousAngle = angleNow;
-	//		angleInitialized = true;
-	//	}
-
-	//	// í”„ë ˆì„ ê°„ ê°ë„ ë³€í™” ê³„ì‚° (360Â° ë„˜ì–´ê°€ë„ ì •í™•í•˜ê²Œ ì²˜ë¦¬)
-	//	float delta = Mathf.DeltaAngle(previousAngle, angleNow);
-	//	previousAngle = angleNow; // í˜„ì¬ ê°ë„ë¥¼ ë‹¤ìŒ í”„ë ˆì„ì„ ìœ„í•´ ì €ì¥
-	//	ProcessSwingDelta(delta, noInput);
-	//	accumulatedAngle = Mathf.Clamp(accumulatedAngle, 0, maxAngle);
-	//	swingGauge.value = accumulatedAngle / maxAngle;
-	//}
-
-	//void ProcessSwingDelta(float delta, bool noInput)
-	//{
-	//	// deltaê°€ ì¶©ë¶„íˆ í¬ë©´ "íšŒì „ ì¤‘"ìœ¼ë¡œ ì²˜ë¦¬
-	//	if (Mathf.Abs(delta) <= turnMinDelta)
-	//	{
-	//		accumulatedAngle -= decreaseSpeed * Time.deltaTime;
-	//		if (accumulatedAngle <= 0)
-	//		{
-	//			accumulatedAngle = 0;
-	//			storedDirection = 0;
-	//		}
-	//		return;
-	//	}
-
-	//	int deltaDir = delta > 0 ? 1 : -1; // íšŒì „ ë°©í–¥ íŒë‹¨
-
-	//	// íšŒì „ ë°©í–¥ì´ ì²˜ìŒ ê²°ì •ë˜ëŠ” ìˆœê°„
-	//	if (storedDirection == 0)
-	//		storedDirection = deltaDir;
-
-	//	if (deltaDir == storedDirection)
-	//	{
-	//		if (noInput)                    // ì…ë ¥ ì—†ì„ ë•Œ
-	//			accumulatedAngle += decreaseSpeed * Time.deltaTime * 0.05f;
-	//		else                            // ê°™ì€ ë°©í–¥ìœ¼ë¡œ ëŒë©´ -> ê²Œì´ì§€ ì¦ê°€   
-	//			accumulatedAngle += Mathf.Abs(delta) * increaseMultiplier;
-	//	}
-	//	else                                // ë°˜ëŒ€ ë°©í–¥ìœ¼ë¡œ ëŒë©´ -> ê²Œì´ì§€ ê°ì†Œ
-	//	{
-	//		accumulatedAngle -= Mathf.Abs(delta) * increaseMultiplier * 1.5f;
-
-	//		if (accumulatedAngle <= 0f)     // ê°ì†Œí•˜ë‹¤ê°€ 0 ì´í•˜ê°€ ë˜ë©´ ë°©í–¥ ì´ˆê¸°í™”
-	//		{
-	//			accumulatedAngle = 0;
-	//			storedDirection = 0;
-	//		}
-	//	}
-	//}
-
-	//void ResetSwingGauge()
-	//{
-	//	// ê°ˆê³ ë¦¬ì—ì„œ ë–¨ì–´ì§€ë©´ ëª¨ë“  ê°’ ì´ˆê¸°í™”
-	//	swingGauge.gameObject.SetActive(false); // ê²Œì´ì§€ ìˆ¨ê¸°ê¸°
-	//	accumulatedAngle = 0f;                  // íšŒì „ëŸ‰ ì´ˆê¸°í™”
-	//	swingGauge.value = 0f;                  // UI ë¦¬ì…‹
-	//	angleInitialized = false;               // ë‹¤ìŒ íšŒì „ ë•Œ ìƒˆ ì´ˆê¸°í™” í•„ìš”
-	//	storedDirection = 0;                    // ë°©í–¥ ì´ˆê¸°í™”
-	//}
-
-	//void HandleThrow() // ë˜ì§€ê¸° ì²˜ë¦¬ ë¶„ë¦¬
-	//{
-	//	// ì  ë˜ëŠ” ì˜¤ë¸Œì íŠ¸ ë˜ì§€ê¸°
-	//	if (!isAttachElement) return;
-
-	//	if (Mouse.current.rightButton.wasPressedThisFrame)
-	//	{
-	//		Vector2 mouseWorld = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-	//		Vector2 dir = mouseWorld - (Vector2)transform.position;
-	//		ThrowElement(hookingList[0], dir);
-	//		line.enabled = true;
-	//		resetHook();                        // í›… ìƒíƒœ ì´ˆê¸°í™”
-	//	}
-	//}
-
-	//void MoveElementPos()   // ì  ë° ì˜¤ë¸Œì íŠ¸ ìœ„ì¹˜ ì´ë™í•˜ê¸°
-	//{
-	//	if (!isAttachElement) return;
-	//	MovePos();
-	//}
-
-	//public void AttachElement(Transform element)    // ì¡ê¸°
-	//{
-	//	if (hookingList.Contains(element) || isAttachElement) return;
-
-	//	LongRangeEnemy enemyAttack = element.GetComponent<LongRangeEnemy>();
-	//	if (enemyAttack != null)
-	//		enemyAttack.isGrabbed = true;
-
-	//	DroneEnemy droneEnemy = element.GetComponent<DroneEnemy>();
-	//	if (droneEnemy != null)
-	//		droneEnemy.isGrabbed = true;
-
-	//	EnemyController enemyController = element.GetComponent<EnemyController>();
-	//	if (enemyController != null)
-	//		enemyController.isGrounded = false;
-
-	//	hookingList.Add(element);   // ë¦¬ìŠ¤íŠ¸ì— ì¶”ê°€í•˜ê¸°
-	//	Collider2D elementCol = element.GetComponent<Collider2D>();
-	//	Collider2D playerCol = GetComponent<Collider2D>();
-	//	Rigidbody2D rb = element.GetComponent<Rigidbody2D>();
-
-	//	if (elementCol != null && playerCol != null)            // í”Œë ˆì´ì–´ê°€ ìê¸° ìì‹ ì„ ì¡ì•˜ì„ ë•Œ -> ì¶©ëŒ ë¬´ì‹œ
-	//		Physics2D.IgnoreCollision(elementCol, playerCol, true);
-
-	//	if (rb != null)                                         // Rigidbodyê°€ ìˆìœ¼ë©´ Kinematicìœ¼ë¡œ
-	//		rb.bodyType = RigidbodyType2D.Kinematic;
-
-	//	element.SetParent(transform);   // í”Œë ˆì´ì–´ ìì‹ìœ¼ë¡œ
-	//	disableHook();                  // í›… & ì¤„ ìˆ¨ê¸°ê¸°
-	//	isAttachElement = true;         // ì¡í˜
-	//}
-
-	//public void ThrowElement(Transform element, Vector2 throwDir)   // ë˜ì§€ê¸°
-	//{
-	//	if (!hookingList.Contains(element)) return;
-	//	LongRangeEnemy longRangeEnemy = element.GetComponent<LongRangeEnemy>();
-	//	if (longRangeEnemy != null)
-	//	{
-	//		longRangeEnemy.isGrabbed = false;
-	//		longRangeEnemy.ResetAttackState();
-	//	}
-
-	//	DroneEnemy droneEnemy = element.GetComponent<DroneEnemy>();
-	//	if (droneEnemy != null)
-	//	{
-	//		droneEnemy.isGrabbed = false;
-	//		droneEnemy.ResetAttackState();
-	//	}
-	//	GameManager.Instance.audioManager.HookThrowEnemySound(1f);  // ì  ë˜ì§€ëŠ” íš¨ê³¼ìŒ
-	//	hookingList.Remove(element);
-	//	element.SetParent(null);    // ë¶€ëª¨ í•´ì œ
-
-	//	if (element.gameObject.CompareTag(tagName.enemy))           // íƒœê·¸ê°€ ì ì¼ ë•Œ
-	//		element.gameObject.tag = tagName.throwingEnemy;         // ë˜ì ¸ì§€ëŠ” ì  íƒœê·¸ë¡œ ë³€ê²½
-	//	else if (element.gameObject.CompareTag(tagName.obj))        // íƒœê·¸ê°€ ì˜¤ë¸Œì íŠ¸ì¼ ë•Œ
-	//		element.gameObject.tag = tagName.throwingObj;           // ë˜ì ¸ì§€ëŠ” ì˜¤ë¸Œì íŠ¸ íƒœê·¸ë¡œ ë³€ê²½
-
-	//	Collider2D enemyCol = element.GetComponent<Collider2D>();
-	//	Collider2D playerCol = GetComponent<Collider2D>();
-	//	Rigidbody2D rb = element.GetComponent<Rigidbody2D>();
-
-	//	if (rb != null)
-	//	{
-	//		rb.bodyType = RigidbodyType2D.Dynamic;
-	//		rb.linearVelocity = Vector2.zero;
-	//		rb.AddForce(throwDir.normalized * GameManager.Instance.playerStatsRuntime.hookThrowForce, ForceMode2D.Impulse);
-	//	}
-
-	//	if (hookingList.Count == 0)
-	//	{
-	//		isAttachElement = false;
-	//		hasPlayedAttachSound = false;
-	//	}
-	//}
-
-	//public void MovePos()   // ìœ„ì¹˜ ì´ë™í•˜ê¸°(ê·¸ë˜í”Œë§ í›…ìœ¼ë¡œ ì¡ì•˜ì„ ê²½ìš°ë§Œ)
-	//{
-	//	if (!isAttachElement) return;
-
-	//	SpriteRenderer playerSprite = GetComponent<SpriteRenderer>();   // í›…ì— ìˆëŠ” í”Œë ˆì´ì–´ SpriteRenderer ê°€ì ¸ì˜¤ê¸°
-
-	//	for (int i = 0; i < hookingList.Count; i++)
-	//	{
-	//		if (hookingList[i] == null) continue;
-
-	//		Vector3 offset = followOffset;
-	//		offset.x = playerSprite.flipX ? -Mathf.Abs(followOffset.x) : Mathf.Abs(followOffset.x); // followOffsetì„ ê¸°ì¤€ìœ¼ë¡œ xë¥¼ ì™¼ìª½/ì˜¤ë¥¸ìª½ ë°©í–¥ ë§ì¶¤
-	//		hookingList[i].localPosition = offset; // ë¶€ëª¨ transform ê¸°ì¤€ localPosition
-	//	}
-	//}
-	//public void disableHook()   // í›… & ì¤„ ìˆ¨ê¸°ê¸°
-	//{
-	//	hook.gameObject.SetActive(false);
-	//	line.enabled = false;
-	//	isAttach = false;
-	//	isHookActive = false;
-	//	isLineMax = false;
-	//}
-
-	//public void resetHook()     // í›… ìƒíƒœ ì´ˆê¸°í™”
-	//{
-	//	isHookActive = false;
-	//	isLineMax = false;
-	//	hook.GetComponent<Hooking>().joint2D.enabled = false;
-	//	hook.gameObject.SetActive(false);
-	//}
-
-	//IEnumerator SlowRoutine()   // ìŠ¬ë¡œìš° íš¨ê³¼ ì½”ë£¨í‹´
-	//{
-	//	sprite.color = Color.red;
-
-	//	if (colorAdjustments != null)
-	//		colorAdjustments.saturation.value = -50f;
-
-	//	Time.timeScale = slowFactor;
-	//	Time.fixedDeltaTime = 0.02f * Time.timeScale;
-	//	float elapsed = 0f;
-
-	//	while (elapsed < slowLength)
-	//	{
-	//		if (GameManager.Instance.playerController.isGrounded || isAttach) break;
-
-	//		elapsed += Time.unscaledDeltaTime;
-	//		yield return null;
-	//	}
-
-	//	Time.timeScale = 1f;
-	//	Time.fixedDeltaTime = 0.02f;
-	//	sprite.color = Color.white;
-
-	//	if (colorAdjustments != null)
-	//		colorAdjustments.saturation.value = 0f;
-	//}
-
-	//public void ApplyHookImpulse(Vector2 hookPos)   // í˜ ì£¼ê¸°
-	//{
-	//	Vector2 dir = (hookPos - (Vector2)transform.position).normalized;
-	//	float horizontal = dir.x > 0 ? 1f : -1f;
-	//	float power = 3f; // í˜ ì„¸ê¸°
-	//	rigid.AddForce(new Vector2(horizontal * power, 1.2f), ForceMode2D.Impulse);
-	//}
-
-	//public float GetGaugePercent()
-	//{
-	//	return accumulatedAngle / maxAngle; // 0~1
-	//}
-
-	//public void Boost(float gaugePercent)
-	//{
-	//	if (currentBoost != null)
-	//		StopCoroutine(currentBoost);
-
-	//	currentBoost = StartCoroutine(BoostRoutine(gaugePercent));
-	//}
-
-	//private IEnumerator BoostRoutine(float gaugePercent)
-	//{
-	//	var stats = GameManager.Instance.playerStatsRuntime;
-	//	float originalSpeed = stats.speed;
-	//	float boostFactor = 1 + (boostMultiplier - 1) * gaugePercent;
-	//	stats.speed = originalSpeed * boostFactor;
-	//	float time = 0f;
-
-	//	while (time < boostDuration)
-	//	{
-	//		if (GameManager.Instance.playerController.hasCollided) break;
-
-	//		time += Time.deltaTime;
-	//		yield return null;
-	//	}
-
-	//	stats.speed = originalSpeed;
-	//	currentBoost = null;
-	//}
-
-	//public void CursorPathMarking()
-	//{
-	//	if (Mouse.current == null) return;
-	//	if (GameManager.Instance.dialogSystem && GameManager.Instance.dialogSystem.isAction) return;    // ìƒí˜¸ì‘ìš© ì¤‘ì¼ ê²½ìš° í‘œì‹œì„  ê·¸ë¦¬ì§€ ì•ŠìŒ
-
-	//	Vector3 mouseScreen = Mouse.current.position.ReadValue();                       // ìŠ¤í¬ë¦° ì¢Œí‘œ êµ¬í•˜ê¸°
-	//	mouseScreen.z = Mathf.Abs(mainCam.transform.position.z);                        // zê°’ ë³´ì •
-	//	Vector2 worldPos = mainCam.ScreenToWorldPoint(mouseScreen);                     // ì›”ë“œ ì¢Œí‘œ
-	//	Vector2 dir = (worldPos - (Vector2)transform.position).normalized;              // ê´‘ì„  ë°©í–¥
-	//	LayerMask mask = ~LayerMask.GetMask(tagName.player);                            // ë ˆì´ì¼€ìŠ¤íŠ¸ í”Œë ˆì´ì–´ ì¶©ëŒ ë¬´ì‹œ
-	//	RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, distance, mask);  // ìê¸° ìœ„ì¹˜ì—ì„œ dir ë°©í–¥ìœ¼ë¡œ ê´‘ì„  ë°œì‚¬
-
-	//	if (isAttach || isHookActive)   // í›… ì‚¬ìš© ì¤‘ì¼ ê²½ìš° ì„  ë¹„í™œì„±í™”
-	//	{
-	//		lineAtoB.Stop();
-	//		return;
-	//	}
-
-	//	if (hit)        // ê´‘ì„ ì— ë¶€ë”ªíˆëŠ” ì˜¤ë¸Œì íŠ¸ê°€ ìˆìœ¼ë©´ ì„  í™œì„±í™”
-	//	{
-	//		if (hit.collider.CompareTag(tagName.npc))   // ë¶€ë”ªíŒ ìš”ì†Œê°€ NPCì¼ ê²½ìš° ì„  ë¹„í™œì„±í™”
-	//		{
-	//			lineAtoB.Stop();
-	//			return;
-	//		}
-
-	//		// ë¶€ë”ªíŒ ìš”ì†Œì— ë”°ë¼ ì„  ìƒ‰ìƒ ë³€ê²½
-	//		// ë­”ê°€ë¥¼ ë“¤ê³  ìˆì„ ë•Œ ì˜¤ë¸Œì íŠ¸ë‚˜ ëª¬ìŠ¤í„°ê°€ ë¶€ë”ªí˜”ì„ ê²½ìš°
-	//		if (isAttachElement && (hit.collider.CompareTag(tagName.enemy) || hit.collider.CompareTag(tagName.obj)))
-	//			lineAtoB.SetLineColor(new Color(1f, 0.2f, 0.2f));
-	//		else if (hit.collider.CompareTag(tagName.obj))
-	//			lineAtoB.SetLineColor(new Color(0.49f, 0.85f, 0.45f));
-	//		else
-	//			lineAtoB.SetLineColor(new Color(0.18f, 0.76f, 1f));
-
-	//		lineAtoB.Play(transform.position, hit.point);
-	//	}
-	//	else
-	//		lineAtoB.Stop();
-	//}
+			Vector3 offset = followOffset;
+			offset.x = playerSprite.flipX ? -Mathf.Abs(followOffset.x) : Mathf.Abs(followOffset.x); // followOffsetÀ» ±âÁØÀ¸·Î x¸¦ ¿ŞÂÊ/¿À¸¥ÂÊ ¹æÇâ ¸ÂÃã
+			hookingList[i].localPosition = offset; // ºÎ¸ğ transform ±âÁØ localPosition
+		}
+	}
 }
