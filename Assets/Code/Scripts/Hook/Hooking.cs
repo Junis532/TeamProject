@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using static Globals;
 
-public class TestHooking : MonoBehaviour
+public class Hooking : MonoBehaviour
 {
 	/* »≈ */
     [HideInInspector] public Vector2 destiny;

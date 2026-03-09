@@ -8,7 +8,7 @@ using UnityEngine.Splines;
 using UnityEngine.UI;
 using tagName = Globals.TagName;
 
-public class TestGrapplingHook : MonoBehaviour
+public class GrapplingHook : MonoBehaviour
 {
 	[Header("그래플링 훅 갈고리 프리펩")]
 	public GameObject hook;
@@ -119,11 +119,11 @@ public class TestGrapplingHook : MonoBehaviour
 					// 가속도 제거 후 증가
 					Rigidbody2D playerRb = player.GetComponent<Rigidbody2D>();
 
-					TestHooking hooking;
+					Hooking hooking;
 					Vector2 destiny = hit.point;    // Raycast로 쐈을 때 충돌된 위치
 					curHook = Instantiate(hook, transform.position, Quaternion.identity);   // 플레이어 위치에 훅 생성
 
-					hooking = curHook.GetComponent<TestHooking>();
+					hooking = curHook.GetComponent<Hooking>();
 					hooking.destiny = destiny;
 					hooking.isHit = true;
 
