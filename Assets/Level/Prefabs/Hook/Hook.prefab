@@ -102,15 +102,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 313841730352807346}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 671b06065eb85294d960aeb5ad890263, type: 3}
+  m_Script: {fileID: 11500000, guid: f8628492ad07fa84996670a3e3d52c6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TestHooking
   destiny: {x: 0, y: 0}
-  speed: 1
+  speed: 0
   isHit: 0
-  constraintRuns: 900
-  gravityForce: {x: 0, y: -50}
-  dampingFactor: 0.95
+  constraintRuns: 500
+  gravityForce: {x: 0, y: -80}
+  dampingFactor: 0.9
   lengthChangeSpeed: 8
   reelSpeed: 30
   segmentCnt: 0

@@ -25,7 +25,6 @@ public class GrapplingHook : MonoBehaviour
 	[HideInInspector] public bool isGrab;			// 훅 잡음 여부
 	[HideInInspector] public GameObject curHook;	// 현재 훅
 	[HideInInspector] public List<Transform> hookingList = new List<Transform>();    // 그래플링 훅으로 잡은 요소 리스트
-	private float distance;							// 훅 길이
 
 	/* 플레이어 */
 	private PlayerController player;
@@ -65,7 +64,6 @@ public class GrapplingHook : MonoBehaviour
 
 		/* 임시 표시선 */
 		lineAtoB = Instantiate(visualizerLine).GetComponent<LineRendererAtoB>();    // 인스턴스화 시킨 오브젝트의 스크립트 컴포넌트 저장하기
-		distance = GameManager.Instance.playerStatsRuntime.hookDistance;            // 표시선 길이 불러오기
 
 		/* 카메라 */
 		mainCam = Camera.main;      // 메인 카메라 정보 가져오기
@@ -92,7 +90,7 @@ public class GrapplingHook : MonoBehaviour
             Vector2 worldPos = mainCam.ScreenToWorldPoint(Mouse.current.position.ReadValue());  // 월드 좌표
 			Vector2 dir = (worldPos - (Vector2)transform.position).normalized;                  // 광선 방향
             LayerMask mask = ~LayerMask.GetMask(tagName.player, tagName.camera);                // 레이케스트 땅만 맞출 수 있도록 마스크 생성
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, distance, mask);      // 자기 위치에서 dir 방향으로 광선 발사
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, GameManager.Instance.playerStatsRuntime.hookDistance, mask);      // 자기 위치에서 dir 방향으로 광선 발사
 
 			if (hit)
 			{
@@ -180,7 +178,7 @@ public class GrapplingHook : MonoBehaviour
 		Vector2 worldPos = mainCam.ScreenToWorldPoint(mouseScreen);                     // 월드 좌표
 		Vector2 dir = (worldPos - (Vector2)transform.position).normalized;              // 광선 방향
 		LayerMask mask = ~LayerMask.GetMask(tagName.player, tagName.camera);                            // 레이케스트 플레이어 충돌 무시
-		RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, distance, mask);  // 자기 위치에서 dir 방향으로 광선 발사
+		RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, GameManager.Instance.playerStatsRuntime.hookDistance, mask);  // 자기 위치에서 dir 방향으로 광선 발사
 
 		if (isAttach)   // 훅 사용 중일 경우 선 비활성화
 		{
