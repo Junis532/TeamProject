@@ -71,8 +71,7 @@ public class Enemy : MonoBehaviour, IDamageable
 		if(!isDie)
 		{
 			isDie = true;       // 죽은 상태로 변경
-			ownerSpawner?.OnEnemyDead(this);	// 스포너가 있으면 스폰되게
-			GlobalUtil.EnemySpawnUpdate(this);	// 스포너 업데이트
+			ownerSpawner?.OnEnemyDead(this);    // 스포너가 있으면 스포너 죽음 처리
 		}
 	}
 

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class EnemySpawnLinker : MonoBehaviour
+public class SpawnLinker : MonoBehaviour
 {
 	[Header("ID")]
 	public int ID;					// ¾ÆÀÌµð

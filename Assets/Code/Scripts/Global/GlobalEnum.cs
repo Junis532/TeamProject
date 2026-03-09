@@ -59,4 +59,11 @@ namespace EnumType
 		Throw,            // 요소 던지기
 		PickAndHook,    // 잡고 던지기
 	}
+
+	// 스포너 타입
+	public enum SpawnerType 
+	{ 
+		Normal = 0,		// 기본 (쿨타임 뒤에 다시 스폰)
+		Control			// 컨트롤 (연결된 스포너)
+	};
 }
