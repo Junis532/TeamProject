@@ -60,7 +60,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     [Header("데미지 슬로우 상태")]
     private bool isDamageSlow = false;
 
-	private TestGrapplingHook grappling;
+	private GrapplingHook grappling;
 	public Vector2 inputVec;
 	private Rigidbody2D rigid;
 	private SpriteRenderer sprite;
@@ -87,7 +87,7 @@ public class PlayerController : MonoBehaviour, IDamageable
 		sprite = GetComponent<SpriteRenderer>();
 		animator = GetComponent<Animator>();
 		interaction = GameManager.Instance.playerInteraction;
-		grappling = GetComponent<TestGrapplingHook>();
+		grappling = GetComponent<GrapplingHook>();
 		solihoutte = GetComponent<Silhouette>();
 	}
 
