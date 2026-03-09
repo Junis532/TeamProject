@@ -66,7 +66,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -138,7 +138,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da319fc7f7b932741989639c6a8af631, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyController
-  isGrounded: 0
 --- !u!114 &3324927558684792273
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -153,7 +152,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   bloodEffectPrefab: {fileID: 1693446582515497918, guid: 891e8414be3a4314b86c3de6aa522f5e, type: 3}
   state: 0
-  isAlive: 1
+  isDie: 0
+  isGrounded: 0
 --- !u!114 &8772206581311161616
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -228,7 +228,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3353455185741389494}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 855696686e85899419e8e5bf47d4a3bf, type: 3}
+  m_Script: {fileID: 11500000, guid: 4c2040b99b1ed91448a6c40c2c40bcd7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawnLinker
   ID: 0
