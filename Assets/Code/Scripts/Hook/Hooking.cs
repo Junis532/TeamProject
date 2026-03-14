@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using static Globals;
@@ -10,7 +9,8 @@ public class Hooking : MonoBehaviour
 	/* 훅 */
     [HideInInspector] public Vector2 destiny;
 	[HideInInspector] public float speed;			// 훅 발사 속도
-	[HideInInspector] public bool isHit = false;	// 땅 충돌 여부 (발사 시 갈고리가 땅에 부딪혔는지)
+	[HideInInspector] public bool isHit = false;    // 땅 충돌 여부 (발사 시 갈고리가 땅에 부딪혔는지)
+	private GrapplingHook grappling;
 
 	/* 훅 물리 */
 	[Header("훅 물리")]
@@ -21,9 +21,9 @@ public class Hooking : MonoBehaviour
 	/* 길이 제어 */
 	[Header("훅 길이 제어")]
 	public float lengthChangeSpeed = 8f;     // 길이 변화 부드러움
-	public float reelSpeed = 30f;            // 감기 속도
-	float currentLength; // 현재 길이
-	float targetLength;  // 목표 길이
+	public float reelSpeed = 20f;            // 감기 속도
+	private float currentLength; // 현재 길이
+	private float targetLength;  // 목표 길이
 
 	private GameObject player;		// 플레이어 오브젝트
     private LineRenderer line;      // 훅 줄
@@ -45,7 +45,8 @@ public class Hooking : MonoBehaviour
 		segmentCnt = Mathf.Max(HookValue.minSegmentLen, (int)(lineLen / HookValue.segmentLen)); // 세그먼트 개수 계산
 		line.positionCount = segmentCnt;
 		speed = GameManager.Instance.playerStatsRuntime.hookSpeed;
-        player = GameObject.FindGameObjectWithTag(TagName.player);		// 플레이어 태그로 정보 불러오기
+        player = GameObject.FindGameObjectWithTag(TagName.player);      // 플레이어 태그로 정보 불러오기
+		grappling = GameManager.Instance.grapplingHook;
 
 		currentLength = lineLen;
 		targetLength = lineLen;
@@ -192,18 +193,24 @@ public class Hooking : MonoBehaviour
 	// 줄 길이 변경
 	void HandleRopeLengthInput()
 	{
-		// 훅 부딪힌 위치 아래 거리의 85% 길이로 길이 보정
 		Vector2 destinyPos = destiny + new Vector2(0f, -1f);    // 땅과 부딪힌 지점의 1만큼 아래로 위치 설정 (버그 방지)
 		LayerMask mask = LayerMask.GetMask(TagName.ground);		// 레이캐스트 땅만 맞출 수 있도록 마스크 생성
-        RaycastHit2D hit = Physics2D.Raycast(destinyPos, Vector2.down, HookValue.maxSegmentLen, mask);        // 자기 위치에서 아래방향으로 광선 발사
-		Debug.DrawLine(destinyPos, hit.point);
-		if(hit && Vector2.Distance(destiny, hit.point) * 0.85f < currentLength)
-            DecreaseRopeLength();
+		RaycastHit2D hit = Physics2D.Raycast(destinyPos, Vector2.down, HookValue.maxSegmentLen, mask);        // 자기 위치에서 아래방향으로 광선 발사
 
-        // 스페이스 키 입력 시 줄 줄어들기
-        if (Keyboard.current.spaceKey.isPressed)
+		// 훅 부딪힌 위치 아래 거리의 길이 보정
+		if (hit && Vector2.Distance(destiny, hit.point) * HookValue.ajustmentScale < currentLength)
+			DecreaseRopeLength();
+
+		// 스페이스 키 입력 시 줄 줄어들기
+		if (Keyboard.current.spaceKey.isPressed)
 		{
 			DecreaseRopeLength();
+
+			// 반올림 된 줄의 길이가 최소 길이 이하일 경우
+			if (Mathf.RoundToInt(lineLen) <= HookValue.minSegmentLen)
+			{
+				grappling.DestroyHook();	// 훅 할당 해제
+			}
 
 			//if (!isPlayedDraftSound)
 			//{
@@ -232,7 +239,7 @@ public class Hooking : MonoBehaviour
 	// 줄 짧아지게
 	private void DecreaseRopeLength()
 	{
-		if (targetLength > HookValue.minSegmentLen)
+		if (targetLength >= HookValue.minSegmentLen)
 		{
 			targetLength -= reelSpeed * Time.deltaTime;
 			ApplyHookImpulse(destiny);  // 가속도 주기
