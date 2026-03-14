@@ -183,7 +183,7 @@ public class GrapplingHook : MonoBehaviour
 				lineAtoB.SetLineColor(new Color(0.18f, 0.76f, 1f));
 
 			// 부딪힌 요소가 트리거가 아닐 경우만 선 그리기
-			if (!(hit.collider.CompareTag(tagName.trigger)))
+			if (!hit.collider.CompareTag(tagName.trigger))
 				lineAtoB.Play(transform.position, hit.point);
 		}
 		else
@@ -242,12 +242,16 @@ public class GrapplingHook : MonoBehaviour
 			droneEnemy.isGrabbed = false;
 			droneEnemy.ResetAttackState();
 		}
+
 		GameManager.Instance.audioManager.HookThrowEnemySound(1f);  // 적 던지는 효과음
 		Collider2D elementCol = element.GetComponent<Collider2D>();
 		Collider2D enemyCol = element.GetComponent<Collider2D>();
 		Collider2D playerCol = GetComponent<Collider2D>();
 		Rigidbody2D rb = element.GetComponent<Rigidbody2D>();
 
+		// 플레이어 가운데로 위치 변경
+		foreach (var h in hookingList)
+			h.localPosition = Vector3.zero;
 		hookingList.Remove(element);
 		element.SetParent(null);    // 부모 해제
 
