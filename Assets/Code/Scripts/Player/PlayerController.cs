@@ -368,7 +368,6 @@ public class PlayerController : MonoBehaviour, IDamageable
                 // 슬로우 코루틴 시작
                 isPlayerSlow = true;
 				StartSlow();
-                Debug.Log("start slow");
 
 				solihoutte.Active = true;
 			}

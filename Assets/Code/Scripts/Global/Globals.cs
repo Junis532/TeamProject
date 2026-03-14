@@ -49,5 +49,6 @@ public class Globals
         public static readonly float segmentLen = 0.225f;
 		public static readonly int minSegmentLen = 1;
 		public static readonly int maxSegmentLen = 30;
+		public static readonly float ajustmentScale = 0.9f;
     }
 }

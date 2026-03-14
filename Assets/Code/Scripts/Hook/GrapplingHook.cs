@@ -1,11 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering.Universal;
-using UnityEngine.Splines;
-using UnityEngine.UI;
 using tagName = Globals.TagName;
 
 public class GrapplingHook : MonoBehaviour
@@ -21,9 +18,9 @@ public class GrapplingHook : MonoBehaviour
 	private Camera mainCam;     // 메인 카메라
 
 	/* 훅 */
-	[HideInInspector] public bool isAttach;			// 훅 사용 여부
-	[HideInInspector] public bool isGrab;			// 훅 잡음 여부
-	[HideInInspector] public GameObject curHook;	// 현재 훅
+	[HideInInspector] public bool isAttach;         // 훅 사용 여부
+	[HideInInspector] public bool isGrab;           // 훅 잡음 여부
+	[HideInInspector] public GameObject curHook;    // 현재 훅
 	[HideInInspector] public List<Transform> hookingList = new List<Transform>();    // 그래플링 훅으로 잡은 요소 리스트
 
 	/* 플레이어 */
@@ -34,11 +31,6 @@ public class GrapplingHook : MonoBehaviour
 
 	/* 사운드 */
 	private bool hasPlayedAttachSound = false;
-
-	/* 부스트 */
-	private Coroutine currentBoost;         // 현재 부스트 코루틴
-	public float boostMultiplier = 1.5f;    // 속도 증가 배율
-	public float boostDuration = 0.5f;      // Boost 지속 시간
 
 	/* 슬로우모션 */
 	[Header("슬로우 비율")]
@@ -86,11 +78,11 @@ public class GrapplingHook : MonoBehaviour
 		// 훅이 활성화되지 않고 우클릭 했을 때
 		if (!isAttach && Mouse.current.rightButton.wasPressedThisFrame)
 		{
-            GameManager.Instance.audioManager.HookShootSound(0.5f);								// 갈고리 발사 효과음
-            Vector2 worldPos = mainCam.ScreenToWorldPoint(Mouse.current.position.ReadValue());  // 월드 좌표
+			GameManager.Instance.audioManager.HookShootSound(0.5f);                             // 갈고리 발사 효과음
+			Vector2 worldPos = mainCam.ScreenToWorldPoint(Mouse.current.position.ReadValue());  // 월드 좌표
 			Vector2 dir = (worldPos - (Vector2)transform.position).normalized;                  // 광선 방향
-            LayerMask mask = ~LayerMask.GetMask(tagName.player, tagName.camera);                // 레이케스트 땅만 맞출 수 있도록 마스크 생성
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, GameManager.Instance.playerStatsRuntime.hookDistance, mask);      // 자기 위치에서 dir 방향으로 광선 발사
+			LayerMask mask = ~LayerMask.GetMask(tagName.player, tagName.camera);                // 레이케스트 땅만 맞출 수 있도록 마스크 생성
+			RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, GameManager.Instance.playerStatsRuntime.hookDistance, mask);      // 자기 위치에서 dir 방향으로 광선 발사
 
 			if (hit)
 			{
@@ -141,26 +133,13 @@ public class GrapplingHook : MonoBehaviour
 		// 우클릭 해제시
 		else if (Mouse.current.rightButton.wasReleasedThisFrame)
 		{
-			// 훅 할당 해제
-			if (curHook != null)
-				Destroy(curHook);
-
-			if (isAttach)
-			{
-				// 줄 놓았을 때 가속도 조정
-				Rigidbody2D playerRb = player.GetComponent<Rigidbody2D>();
-				Vector2 slow = new Vector2(0.25f, 0.7f);
-				playerRb.linearVelocity *= slow;
-
-				isAttach = false;
-				hasPlayedAttachSound = false;
-			}
+			DestroyHook();		// 훅 할당 해제
 		}
 
 		// 요소를 잡고 있고, 마우스를 좌클릭 했을 경우
 		else if (isGrab && Mouse.current.leftButton.wasPressedThisFrame)
 		{
-			Vector2 worldPos = mainCam.ScreenToWorldPoint(Mouse.current.position.ReadValue());	// 월드 좌표
+			Vector2 worldPos = mainCam.ScreenToWorldPoint(Mouse.current.position.ReadValue());  // 월드 좌표
 			Vector2 dir = (worldPos - (Vector2)transform.position).normalized;      // 광선 방향
 			ThrowElement(hookingList[0], dir);  // 적 던지기
 			isGrab = false;
@@ -173,11 +152,11 @@ public class GrapplingHook : MonoBehaviour
 		if (Mouse.current == null) return;
 		if (GameManager.Instance.dialogSystem && GameManager.Instance.dialogSystem.isAction) return;    // 상호작용 중일 경우 표시선 그리지 않음
 
-		Vector3 mouseScreen = Mouse.current.position.ReadValue();                       // 스크린 좌표 구하기
-		mouseScreen.z = Mathf.Abs(mainCam.transform.position.z);                        // z값 보정
-		Vector2 worldPos = mainCam.ScreenToWorldPoint(mouseScreen);                     // 월드 좌표
-		Vector2 dir = (worldPos - (Vector2)transform.position).normalized;              // 광선 방향
-		LayerMask mask = ~LayerMask.GetMask(tagName.player, tagName.camera);                            // 레이케스트 플레이어 충돌 무시
+		Vector3 mouseScreen = Mouse.current.position.ReadValue();                   // 스크린 좌표 구하기
+		mouseScreen.z = Mathf.Abs(mainCam.transform.position.z);                    // z값 보정
+		Vector2 worldPos = mainCam.ScreenToWorldPoint(mouseScreen);                 // 월드 좌표
+		Vector2 dir = (worldPos - (Vector2)transform.position).normalized;          // 광선 방향
+		LayerMask mask = ~LayerMask.GetMask(tagName.player, tagName.camera);        // 레이케스트 플레이어 충돌 무시
 		RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, GameManager.Instance.playerStatsRuntime.hookDistance, mask);  // 자기 위치에서 dir 방향으로 광선 발사
 
 		if (isAttach)   // 훅 사용 중일 경우 선 비활성화
@@ -204,11 +183,13 @@ public class GrapplingHook : MonoBehaviour
 				lineAtoB.SetLineColor(new Color(0.18f, 0.76f, 1f));
 
 			// 부딪힌 요소가 트리거가 아닐 경우만 선 그리기
-			if(!(hit.collider.CompareTag(tagName.trigger)))
+			if (!(hit.collider.CompareTag(tagName.trigger)))
 				lineAtoB.Play(transform.position, hit.point);
 		}
 		else
+		{
 			lineAtoB.Stop();
+		}
 	}
 
 	// 잡기
@@ -235,9 +216,9 @@ public class GrapplingHook : MonoBehaviour
 
 		if (elementCol != null && playerCol != null)            // 플레이어가 자기 자신을 잡았을 때 -> 충돌 무시
 			Physics2D.IgnoreCollision(elementCol, playerCol, true);
-		
+
 		// 적을 잡았을 경우
-		if(element.CompareTag(tagName.enemy) || element.CompareTag(tagName.throwingEnemy))
+		if (element.CompareTag(tagName.enemy) || element.CompareTag(tagName.throwingEnemy))
 			element.GetComponent<Enemy>().DieEnemy();       // 잡은 적 죽음 처리
 
 		element.SetParent(transform);   // 플레이어 자식으로
@@ -262,13 +243,12 @@ public class GrapplingHook : MonoBehaviour
 			droneEnemy.ResetAttackState();
 		}
 		GameManager.Instance.audioManager.HookThrowEnemySound(1f);  // 적 던지는 효과음
-        Collider2D elementCol = element.GetComponent<Collider2D>();
-        Collider2D enemyCol = element.GetComponent<Collider2D>();
-        Collider2D playerCol = GetComponent<Collider2D>();
-        Rigidbody2D rb = element.GetComponent<Rigidbody2D>();
+		Collider2D elementCol = element.GetComponent<Collider2D>();
+		Collider2D enemyCol = element.GetComponent<Collider2D>();
+		Collider2D playerCol = GetComponent<Collider2D>();
+		Rigidbody2D rb = element.GetComponent<Rigidbody2D>();
 
-
-        hookingList.Remove(element);
+		hookingList.Remove(element);
 		element.SetParent(null);    // 부모 해제
 
 		if (element.gameObject.CompareTag(tagName.enemy))           // 태그가 적일 때
@@ -276,10 +256,10 @@ public class GrapplingHook : MonoBehaviour
 		else if (element.gameObject.CompareTag(tagName.obj))        // 태그가 오브젝트일 때
 			element.gameObject.tag = tagName.throwingObj;           // 던져지는 오브젝트 태그로 변경
 
-        if (elementCol != null && playerCol != null)
-            Physics2D.IgnoreCollision(elementCol, playerCol, false);
+		if (elementCol != null && playerCol != null)
+			Physics2D.IgnoreCollision(elementCol, playerCol, false);
 
-        if (rb != null)
+		if (rb != null)
 		{
 			rb.bodyType = RigidbodyType2D.Dynamic;
 			rb.linearVelocity = Vector2.zero;
@@ -307,6 +287,24 @@ public class GrapplingHook : MonoBehaviour
 			Vector3 offset = followOffset;
 			offset.x = playerSprite.flipX ? -Mathf.Abs(followOffset.x) : Mathf.Abs(followOffset.x); // followOffset을 기준으로 x를 왼쪽/오른쪽 방향 맞춤
 			hookingList[i].localPosition = offset; // 부모 transform 기준 localPosition
+		}
+	}
+
+	public void DestroyHook()
+	{
+		// 훅 할당 해제
+		if (curHook != null)
+			Destroy(curHook);
+
+		if (isAttach)
+		{
+			// 줄 놓았을 때 가속도 조정
+			Rigidbody2D playerRb = player.GetComponent<Rigidbody2D>();
+			Vector2 slow = new Vector2(0.25f, 0.7f);
+			playerRb.linearVelocity *= slow;
+
+			isAttach = false;
+			hasPlayedAttachSound = false;
 		}
 	}
 }
